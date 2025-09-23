@@ -1,6 +1,10 @@
 package goGoFramework
 
-import "github.com/hajimehoshi/ebiten/v2"
+import (
+	"image/color"
+
+	"github.com/hajimehoshi/ebiten/v2"
+)
 
 type GoGoFramework struct {
 	GameName string
@@ -14,8 +18,13 @@ type GoGoWindow struct {
 }
 
 func NewGoGoFrameworkWithDefaults(gameName string) *GoGoFramework {
+
+	demoScene := ebiten.NewImage(50, 50)
+	demoScene.Fill(color.RGBA{0xff, 0, 0, 0xff})
+
 	return &GoGoFramework{
 		GameName: gameName,
+		Scene:    demoScene,
 		Window: &GoGoWindow{
 			Width:  620,
 			Height: 620,
@@ -28,9 +37,16 @@ func (g *GoGoFramework) Update() error {
 }
 
 func (g *GoGoFramework) Draw(screen *ebiten.Image) {
-	// op := &ebiten.DrawImageOptions{}
+	op := &ebiten.DrawImageOptions{}
+	screen.DrawImage(g.Scene, op)
 
-	// screen.DrawImage(screen, op)
+	// if screen == nil {
+	// 	screen.DrawImage(g.Scene, op)
+	// } else {
+	// 	screen.DrawImage(screen, op)
+
+	// }
+
 }
 
 func (g *GoGoFramework) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
