@@ -1,7 +1,7 @@
-package goGoFramework
+package gogoFramework
 
 import (
-	"image/color"
+	"go-go-framework/src/scheduler"
 
 	"github.com/hajimehoshi/ebiten/v2"
 )
@@ -9,6 +9,8 @@ import (
 type GoGoFramework struct {
 	GameName string
 	Scene    *ebiten.Image
+	npc      []*ebiten.Image
+	player   []*ebiten.Image
 	Window   *GoGoWindow
 }
 
@@ -17,14 +19,21 @@ type GoGoWindow struct {
 	Height int
 }
 
+func (g *GoGoFramework) RegisterScene(scene *ebiten.Image) {
+	g.Scene = scene
+}
+
+func (g *GoGoFramework) AddNpc(npc *ebiten.Image) {
+	g.npc = append(g.npc, npc)
+}
+
 func NewGoGoFrameworkWithDefaults(gameName string) *GoGoFramework {
 
-	demoScene := ebiten.NewImage(50, 50)
-	demoScene.Fill(color.RGBA{0xff, 0, 0, 0xff})
+	// demoScene := ebiten.NewImage(50, 50)
+	// demoScene.Fill(color.RGBA{0xff, 0, 0, 0xff})
 
 	return &GoGoFramework{
 		GameName: gameName,
-		Scene:    demoScene,
 		Window: &GoGoWindow{
 			Width:  620,
 			Height: 620,
@@ -38,15 +47,10 @@ func (g *GoGoFramework) Update() error {
 
 func (g *GoGoFramework) Draw(screen *ebiten.Image) {
 	op := &ebiten.DrawImageOptions{}
-	screen.DrawImage(g.Scene, op)
-
-	// if screen == nil {
-	// 	screen.DrawImage(g.Scene, op)
-	// } else {
-	// 	screen.DrawImage(screen, op)
-
-	// }
-
+	var images = scheduler.NewScheduler(g.Scene, g.npc, g.player)
+	for _, image := range images.GetItemsToDraw() {
+		screen.DrawImage(image, op)
+	}
 }
 
 func (g *GoGoFramework) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {

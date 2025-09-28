@@ -1,14 +1,15 @@
 package demo
 
 import (
-	"go-go-framework/src/goGoFramework"
+	"go-go-framework/src/gogoFramework"
+	"image/color"
 	"log"
 
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
 type Game struct {
-	framework *goGoFramework.GoGoFramework
+	framework *gogoFramework.GoGoFramework
 }
 
 func (g *Game) Update() error {
@@ -25,9 +26,15 @@ func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeigh
 
 func RunDemo() {
 	demo := &Game{
-		framework: goGoFramework.NewGoGoFrameworkWithDefaults("DEMO"),
+		framework: gogoFramework.NewGoGoFrameworkWithDefaults("DEMO"),
 	}
-	ebiten.SetWindowSize(620*2, 620*2)
+
+	newScene := ebiten.NewImage(100, 100)
+	newScene.Fill(color.RGBA{0xee, 10, 50, 0xff})
+
+	demo.framework.RegisterScene(newScene)
+
+	ebiten.SetWindowSize(620, 620)
 	ebiten.SetWindowTitle("Animation (Ebitengine Demo)")
 	err := ebiten.RunGame(demo)
 
