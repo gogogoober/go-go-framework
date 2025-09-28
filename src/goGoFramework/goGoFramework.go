@@ -14,6 +14,12 @@ type GoGoFramework struct {
 	Window   *GoGoWindow
 }
 
+type Component struct {
+	Sprite *ebiten.Image
+	X      int
+	Y      int
+}
+
 type GoGoWindow struct {
 	Width  int
 	Height int

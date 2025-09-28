@@ -2,6 +2,7 @@ package demo
 
 import (
 	"go-go-framework/src/gogoFramework"
+	"go-go-framework/src/utils"
 	"image/color"
 	"log"
 
@@ -32,7 +33,12 @@ func RunDemo() {
 	newScene := ebiten.NewImage(100, 100)
 	newScene.Fill(color.RGBA{0xee, 10, 50, 0xff})
 
+	circ := utils.NewCircle(40, color.RGBA{0xee, 0x10, 0x32, 0xff})
+	rect := utils.NewRect(120, 80, color.RGBA{60, 160, 255, 255})
+
 	demo.framework.RegisterScene(newScene)
+	demo.framework.AddNpc(rect)
+	demo.framework.AddNpc(circ)
 
 	ebiten.SetWindowSize(620, 620)
 	ebiten.SetWindowTitle("Animation (Ebitengine Demo)")
