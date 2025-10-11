@@ -1,4 +1,4 @@
-module go-go-framework
+module go-go-Framework
 
 go 1.24.1
 

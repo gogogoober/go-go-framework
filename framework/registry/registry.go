@@ -8,6 +8,10 @@ type Registry struct {
 	Npcs    []*ebiten.Image
 }
 
+func NewRegistry() *Registry {
+	return &Registry{}
+}
+
 func (r *Registry) AddScene(s *ebiten.Image) {
 	r.Scene = s
 }

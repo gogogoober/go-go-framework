@@ -1,16 +1,17 @@
-package gogoFramework
+package framework
 
 import (
-	"go-go-framework/src/gogoFramework/registry"
-	"go-go-framework/src/gogoFramework/scheduler"
+	"go-go-Framework/framework/registry"
+	"go-go-Framework/framework/scheduler"
 
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
 type GoGoFramework struct {
-	GameName string
-	Window   *GoGoWindow
-	registry.Registry
+	GameName  string
+	Window    *GoGoWindow
+	Registry  *registry.Registry
+	Scheduler *scheduler.Scheduler
 }
 
 type GoGoWindow struct {
@@ -19,8 +20,11 @@ type GoGoWindow struct {
 }
 
 func NewGoGoFrameworkWithDefaults(gameName string) *GoGoFramework {
+	reg := registry.NewRegistry()
 	return &GoGoFramework{
-		GameName: gameName,
+		GameName:  gameName,
+		Registry:  reg,
+		Scheduler: scheduler.NewScheduler(reg),
 		Window: &GoGoWindow{
 			Width:  620,
 			Height: 620,
@@ -33,15 +37,7 @@ func (g *GoGoFramework) Update() error {
 }
 
 func (g *GoGoFramework) Draw(screen *ebiten.Image) {
-	op := &ebiten.DrawImageOptions{}
-	var images = scheduler.NewScheduler(g.Registry.Scene, g.Registry.Npcs, g.Registry.Players)
-	for _, image := range images.GetItemsToDraw() {
-		screen.DrawImage(image, op)
-	}
-
-	for _, image := range images.GetComponentToDraw() {
-		screen.DrawImage(image, op)
-	}
+	g.Scheduler.ScheduleDrawings(screen)
 }
 
 func (g *GoGoFramework) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {

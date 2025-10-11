@@ -1,8 +1,9 @@
 package demo
 
 import (
-	"go-go-framework/src/gogoFramework"
-	"go-go-framework/src/utils"
+	"go-go-Framework/framework"
+	"go-go-Framework/framework/utils"
+
 	"image/color"
 	"log"
 
@@ -10,7 +11,7 @@ import (
 )
 
 type Game struct {
-	framework *gogoFramework.GoGoFramework
+	framework *framework.GoGoFramework
 }
 
 func (g *Game) Update() error {
@@ -27,7 +28,7 @@ func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeigh
 
 func RunDemo() {
 	demo := &Game{
-		framework: gogoFramework.NewGoGoFrameworkWithDefaults("DEMO"),
+		framework: framework.NewGoGoFrameworkWithDefaults("DEMO"),
 	}
 
 	newScene := ebiten.NewImage(100, 100)
