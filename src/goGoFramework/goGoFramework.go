@@ -1,7 +1,6 @@
 package gogoFramework
 
 import (
-	"go-go-framework/src/gogoFramework/component"
 	"go-go-framework/src/gogoFramework/registry"
 	"go-go-framework/src/gogoFramework/scheduler"
 
@@ -10,9 +9,6 @@ import (
 
 type GoGoFramework struct {
 	GameName string
-	Scene    *ebiten.Image
-	npc      []*ebiten.Image
-	player   []*component.Component
 	Window   *GoGoWindow
 	registry.Registry
 }
