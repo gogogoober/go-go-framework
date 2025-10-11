@@ -16,32 +16,32 @@ func NewScheduler(registry *registry.Registry) *Scheduler {
 	}
 }
 
-func (gs *Scheduler) GetComponentToDraw() []*ebiten.Image {
+func (s *Scheduler) GetComponentToDraw() []*ebiten.Image {
 	var items = make([]*ebiten.Image, 0)
 
-	items = append(items, gs.registry.Players...)
+	items = append(items, s.registry.Players...)
 	return items
 }
 
-func (gs *Scheduler) GetItemsToDraw() []*ebiten.Image {
+func (s *Scheduler) GetItemsToDraw() []*ebiten.Image {
 	var items = make([]*ebiten.Image, 0)
 
-	items = append(items, gs.registry.Scene)
+	items = append(items, s.registry.Scene)
 
-	for _, n := range gs.registry.Npcs {
+	for _, n := range s.registry.Npcs {
 		items = append(items, n)
 	}
 
 	return items
 }
 
-func (gs *Scheduler) ScheduleDrawings(screen *ebiten.Image) {
+func (s *Scheduler) ScheduleDrawings(screen *ebiten.Image) {
 	op := &ebiten.DrawImageOptions{}
-	for _, image := range gs.GetItemsToDraw() {
+	for _, image := range s.GetItemsToDraw() {
 		screen.DrawImage(image, op)
 	}
 
-	for _, image := range gs.GetComponentToDraw() {
+	for _, image := range s.GetComponentToDraw() {
 		screen.DrawImage(image, op)
 	}
 }

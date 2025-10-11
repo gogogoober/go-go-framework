@@ -12,7 +12,7 @@ func NewRegistry() *Registry {
 	return &Registry{}
 }
 
-func (r *Registry) AddScene(s *ebiten.Image) {
+func (r *Registry) SetScene(s *ebiten.Image) {
 	r.Scene = s
 }
 

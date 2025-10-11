@@ -39,7 +39,7 @@ func RunDemo() {
 
 	// player := utils.NewCircle(40, color.RGBA{0xee, 0x10, 0x32, 0xff})
 
-	demo.framework.Registry.AddScene(newScene)
+	demo.framework.Registry.SetScene(newScene)
 	demo.framework.Registry.AddNpc(rect)
 	demo.framework.Registry.AddNpc(circ)
 
