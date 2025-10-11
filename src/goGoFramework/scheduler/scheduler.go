@@ -1,6 +1,8 @@
 package scheduler
 
-import "github.com/hajimehoshi/ebiten/v2"
+import (
+	"github.com/hajimehoshi/ebiten/v2"
+)
 
 type GoGoScheduler struct {
 	Scene  *ebiten.Image
@@ -16,12 +18,17 @@ func NewScheduler(scene *ebiten.Image, npc []*ebiten.Image, player []*ebiten.Ima
 	}
 }
 
+func (gs *GoGoScheduler) GetComponentToDraw() []*ebiten.Image {
+	var items = make([]*ebiten.Image, 0)
+
+	items = append(items, gs.player...)
+	return items
+}
+
 func (gs *GoGoScheduler) GetItemsToDraw() []*ebiten.Image {
 	var items = make([]*ebiten.Image, 0)
 
 	items = append(items, gs.Scene)
-
-	items = append(items, gs.player...)
 
 	for _, n := range gs.npc {
 		items = append(items, n)

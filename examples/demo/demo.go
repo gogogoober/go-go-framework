@@ -36,9 +36,11 @@ func RunDemo() {
 	circ := utils.NewCircle(40, color.RGBA{0xee, 0x10, 0x32, 0xff})
 	rect := utils.NewRect(120, 80, color.RGBA{60, 160, 255, 255})
 
-	demo.framework.RegisterScene(newScene)
-	demo.framework.AddNpc(rect)
-	demo.framework.AddNpc(circ)
+	// player := utils.NewCircle(40, color.RGBA{0xee, 0x10, 0x32, 0xff})
+
+	demo.framework.Registry.AddScene(newScene)
+	demo.framework.Registry.AddNpc(rect)
+	demo.framework.Registry.AddNpc(circ)
 
 	ebiten.SetWindowSize(620, 620)
 	ebiten.SetWindowTitle("Animation (Ebitengine Demo)")
