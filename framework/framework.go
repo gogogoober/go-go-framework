@@ -4,10 +4,9 @@ import (
 	"fmt"
 	"go-go-Framework/framework/registry"
 	"go-go-Framework/framework/scheduler"
-	"go-go-Framework/framework/services"
+	"go-go-Framework/framework/services/inputservice"
 
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
 
 type GoGoFramework struct {
@@ -15,7 +14,6 @@ type GoGoFramework struct {
 	Window    *GoGoWindow
 	Registry  *registry.Registry
 	Scheduler *scheduler.Scheduler
-	services.Services
 }
 
 type GoGoWindow struct {
@@ -25,6 +23,7 @@ type GoGoWindow struct {
 
 func NewGoGoFrameworkWithDefaults(gameName string) *GoGoFramework {
 	reg := registry.NewRegistry()
+
 	return &GoGoFramework{
 		GameName:  gameName,
 		Registry:  reg,
@@ -38,9 +37,8 @@ func NewGoGoFrameworkWithDefaults(gameName string) *GoGoFramework {
 
 func (g *GoGoFramework) Update() error {
 
-	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
-		fmt.Printf("TEST")
-
+	if inputservice.IsKeyStringPressed("a") {
+		fmt.Printf("Escape")
 	}
 
 	return nil

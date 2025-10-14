@@ -5,10 +5,6 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
 
-type Inputservice struct {
-	KeyMap map[string]GoGoKey
-}
-
 type GoGoKey = ebiten.Key
 
 var KeyMap = map[string]GoGoKey{
@@ -73,21 +69,15 @@ var KeyMap = map[string]GoGoKey{
 	"win": ebiten.KeyMeta, "windows": ebiten.KeyMeta, // Windows key
 }
 
-func NewInputService() *Inputservice {
-	return &Inputservice{
-		KeyMap: KeyMap,
-	}
-}
-
-func (is *Inputservice) isKeyStringPressed(keys ...string) bool {
+func IsKeyStringPressed(keys ...string) bool {
 	for _, key := range keys {
-		if k, ok := is.KeyMap[key]; ok {
+		if k, ok := KeyMap[key]; ok {
 			return inpututil.IsKeyJustPressed(k)
 		}
 	}
 	return false
 }
 
-func (is *Inputservice) isKeyPressed(key GoGoKey) bool {
+func IsKeyPressed(key GoGoKey) bool {
 	return inpututil.IsKeyJustPressed(key)
 }
