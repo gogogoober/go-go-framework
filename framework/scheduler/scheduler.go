@@ -16,32 +16,41 @@ func NewScheduler(registry *registry.Registry) *Scheduler {
 	}
 }
 
-func (s *Scheduler) GetComponentToDraw() []*ebiten.Image {
-	var items = make([]*ebiten.Image, 0)
+func (s *Scheduler) GetComponentsToDraw() []*ebiten.Image {
+	spriteCount := len(s.registry.Npcs) + len(s.registry.Players)
+	var items = make([]*ebiten.Image, 0, spriteCount)
 
-	items = append(items, s.registry.Players...)
-	return items
-}
+	for _, s := range s.registry.Players {
+		items = append(items, s.GetSprite())
+	}
 
-func (s *Scheduler) GetItemsToDraw() []*ebiten.Image {
-	var items = make([]*ebiten.Image, 0)
-
-	items = append(items, s.registry.Scene)
-
-	for _, n := range s.registry.Npcs {
-		items = append(items, n)
+	for _, s := range s.registry.Npcs {
+		items = append(items, s)
 	}
 
 	return items
+}
+
+func (s *Scheduler) GetComponents() []registry.Component {
+	spriteCount := len(s.registry.Npcs) + len(s.registry.Players)
+	var items = make([]registry.Component, 0, spriteCount)
+
+	for _, s := range s.registry.Players {
+		items = append(items, s)
+	}
+	return items
+}
+
+func (s *Scheduler) ScheduleUpdates() {
+	for _, c := range s.GetComponents() {
+		c.Update()
+	}
 }
 
 func (s *Scheduler) ScheduleDrawings(screen *ebiten.Image) {
 	op := &ebiten.DrawImageOptions{}
-	for _, image := range s.GetItemsToDraw() {
-		screen.DrawImage(image, op)
-	}
 
-	for _, image := range s.GetComponentToDraw() {
+	for _, image := range s.GetComponentsToDraw() {
 		screen.DrawImage(image, op)
 	}
 }

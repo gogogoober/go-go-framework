@@ -1,10 +1,8 @@
 package framework
 
 import (
-	"fmt"
 	"go-go-Framework/framework/registry"
 	"go-go-Framework/framework/scheduler"
-	"go-go-Framework/framework/services/inputservice"
 
 	"github.com/hajimehoshi/ebiten/v2"
 )
@@ -37,9 +35,10 @@ func NewGoGoFrameworkWithDefaults(gameName string) *GoGoFramework {
 
 func (g *GoGoFramework) Update() error {
 
-	if inputservice.IsKeyStringPressed("a") {
-		fmt.Printf("Escape")
-	}
+	// if inputservice.IsKeyStringPressed("a") {
+	// 	fmt.Printf("Escape")
+	// }
+	g.Scheduler.ScheduleUpdates()
 
 	return nil
 }

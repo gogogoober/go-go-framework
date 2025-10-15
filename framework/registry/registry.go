@@ -4,19 +4,28 @@ import "github.com/hajimehoshi/ebiten/v2"
 
 type Registry struct {
 	Scene   *ebiten.Image
-	Players []*ebiten.Image
+	Players []Component //Component stores an abstract type, only use pointers for concrete types
 	Npcs    []*ebiten.Image
 }
 
+type Component interface {
+	SetSprite(sprite *ebiten.Image)
+	GetSprite() *ebiten.Image
+	Update()
+}
+
 func NewRegistry() *Registry {
-	return &Registry{}
+	return &Registry{
+		Players: make([]Component, 0),
+		Npcs:    make([]*ebiten.Image, 0),
+	}
 }
 
 func (r *Registry) SetScene(s *ebiten.Image) {
 	r.Scene = s
 }
 
-func (r *Registry) AddPlayer(p *ebiten.Image) {
+func (r *Registry) AddPlayer(p Component) {
 	r.Players = append(r.Players, p)
 }
 

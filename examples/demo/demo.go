@@ -1,6 +1,7 @@
 package demo
 
 import (
+	"go-go-Framework/examples/demo/player"
 	"go-go-Framework/framework"
 	"go-go-Framework/framework/utils"
 
@@ -42,6 +43,9 @@ func RunDemo() {
 	demo.framework.Registry.SetScene(newScene)
 	demo.framework.Registry.AddNpc(rect)
 	demo.framework.Registry.AddNpc(circ)
+
+	playerC := player.NewPlayerComponent()
+	demo.framework.Registry.AddPlayer(playerC)
 
 	ebiten.SetWindowSize(620, 620)
 	ebiten.SetWindowTitle("Animation (Ebitengine Demo)")
