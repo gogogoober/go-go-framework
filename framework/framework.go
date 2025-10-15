@@ -34,12 +34,7 @@ func NewGoGoFrameworkWithDefaults(gameName string) *GoGoFramework {
 }
 
 func (g *GoGoFramework) Update() error {
-
-	// if inputservice.IsKeyStringPressed("a") {
-	// 	fmt.Printf("Escape")
-	// }
 	g.Scheduler.ScheduleUpdates()
-
 	return nil
 }
 

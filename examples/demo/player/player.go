@@ -17,10 +17,8 @@ type PlayerComponent struct {
 
 func NewPlayerComponent() *PlayerComponent {
 	rect := utils.NewRect(120, 80, color.RGBA{60, 160, 255, 255})
-	spr := make([]*ebiten.Image, 0)
-	spr = append(spr, rect)
 	return &PlayerComponent{
-		sprites: spr,
+		sprites: []*ebiten.Image{rect},
 	}
 }
 
