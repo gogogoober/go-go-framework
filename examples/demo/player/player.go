@@ -12,13 +12,21 @@ import (
 
 type PlayerComponent struct {
 	registry.Component
+	X       int
+	Y       int
 	sprites []*ebiten.Image
+	op      ebiten.DrawImageOptions
 }
 
 func NewPlayerComponent() *PlayerComponent {
 	rect := utils.NewRect(120, 80, color.RGBA{60, 160, 255, 255})
+	op := ebiten.DrawImageOptions{}
+
 	return &PlayerComponent{
+		X:       0,
+		Y:       0,
 		sprites: []*ebiten.Image{rect},
+		op:      op,
 	}
 }
 
