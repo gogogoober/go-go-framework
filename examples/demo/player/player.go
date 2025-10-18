@@ -1,7 +1,7 @@
 package player
 
 import (
-	"go-go-Framework/framework/registry"
+	"go-go-Framework/framework/entity"
 	"go-go-Framework/framework/services/inputservice"
 	"go-go-Framework/framework/utils"
 	"image/color"
@@ -10,7 +10,7 @@ import (
 )
 
 type PlayerComponent struct {
-	registry.Component
+	entity.Component
 	X       int
 	Y       int
 	sprites []*ebiten.Image

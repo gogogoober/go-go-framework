@@ -1,6 +1,7 @@
 package scheduler
 
 import (
+	"go-go-Framework/framework/entity"
 	"go-go-Framework/framework/registry"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -16,9 +17,9 @@ func NewScheduler(registry *registry.Registry) *Scheduler {
 	}
 }
 
-func (s *Scheduler) GetComponentsToDraw() []registry.Component {
+func (s *Scheduler) GetComponentsToDraw() []entity.Component {
 	spriteCount := len(s.registry.Npcs) + len(s.registry.Players)
-	var items = make([]registry.Component, 0, spriteCount)
+	var items = make([]entity.Component, 0, spriteCount)
 
 	for _, s := range s.registry.Players {
 		items = append(items, s)
@@ -31,9 +32,9 @@ func (s *Scheduler) GetComponentsToDraw() []registry.Component {
 	return items
 }
 
-func (s *Scheduler) GetComponents() []registry.Component {
+func (s *Scheduler) GetComponents() []entity.Component {
 	spriteCount := len(s.registry.Npcs) + len(s.registry.Players)
-	var items = make([]registry.Component, 0, spriteCount)
+	var items = make([]entity.Component, 0, spriteCount)
 
 	for _, s := range s.registry.Players {
 		items = append(items, s)

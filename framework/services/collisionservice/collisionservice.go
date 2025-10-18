@@ -1,13 +1,8 @@
 package collisionservice
 
-// import "go-go-Framework/framework/registry"
+import "go-go-Framework/framework/entity"
 
-type CollisionService struct {
+func AreComponentsColliding(c1 entity.Component, c2 entity.Component) bool {
+
+	return false
 }
-
-// func (cs *CollisionService) AreComponentsColliding(mainComponent registry.Component, components ...registry.Component) bool {
-// 	for i, c := range components {
-
-// 	}
-// 	return true
-// }
