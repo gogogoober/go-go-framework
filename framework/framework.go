@@ -3,34 +3,37 @@ package framework
 import (
 	"go-go-Framework/framework/registry"
 	"go-go-Framework/framework/scheduler"
+	"go-go-Framework/framework/window"
 
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
 type GoGoFramework struct {
 	GameName  string
-	Window    *GoGoWindow
+	Window    *window.GoGoWindow
 	Registry  *registry.Registry
 	Scheduler *scheduler.Scheduler
 }
 
-type GoGoWindow struct {
-	Width  int
-	Height int
+type GoGoFrameworkNewParams struct {
+	GameName string
+	window.GoGoWindow
 }
 
-func NewGoGoFrameworkWithDefaults(gameName string) *GoGoFramework {
+func NewGoGoFramework(params GoGoFrameworkNewParams) *GoGoFramework {
 	reg := registry.NewRegistry()
 
 	return &GoGoFramework{
-		GameName:  gameName,
+		GameName:  params.GameName,
 		Registry:  reg,
 		Scheduler: scheduler.NewScheduler(reg),
-		Window: &GoGoWindow{
-			Width:  620,
-			Height: 620,
-		},
+		Window:    &params.GoGoWindow,
 	}
+}
+
+func (g *GoGoFramework) Init() {
+	ebiten.SetWindowSize(g.Window.Width, g.Window.Height)
+	ebiten.SetWindowTitle(g.GameName)
 }
 
 func (g *GoGoFramework) Update() error {

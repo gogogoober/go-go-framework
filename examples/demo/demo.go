@@ -3,9 +3,7 @@ package demo
 import (
 	"go-go-Framework/examples/demo/player"
 	"go-go-Framework/framework"
-	"go-go-Framework/framework/utils"
-
-	"image/color"
+	"go-go-Framework/framework/window"
 	"log"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -29,28 +27,13 @@ func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeigh
 
 func RunDemo() {
 	demo := &Game{
-		framework: framework.NewGoGoFrameworkWithDefaults("DEMO"),
+		framework: framework.NewGoGoFramework(framework.GoGoFrameworkNewParams{"Game Name", window.GoGoWindow{620, 620}}),
 	}
 
-	newScene := ebiten.NewImage(100, 100)
-	newScene.Fill(color.RGBA{0xee, 10, 50, 0xff})
+	demo.framework.Registry.AddPlayer(player.NewPlayerComponent())
+	demo.framework.Init()
 
-	circ := utils.NewCircle(40, color.RGBA{0xee, 0x10, 0x32, 0xff})
-	rect := utils.NewRect(120, 80, color.RGBA{60, 160, 255, 255})
-
-	// player := utils.NewCircle(40, color.RGBA{0xee, 0x10, 0x32, 0xff})
-
-	demo.framework.Registry.SetScene(newScene)
-	demo.framework.Registry.AddNpc(rect)
-	demo.framework.Registry.AddNpc(circ)
-
-	playerC := player.NewPlayerComponent()
-	demo.framework.Registry.AddPlayer(playerC)
-
-	ebiten.SetWindowSize(620, 620)
-	ebiten.SetWindowTitle("Animation (Ebitengine Demo)")
 	err := ebiten.RunGame(demo)
-
 	if err != nil {
 		log.Fatal(err)
 		panic(err)
