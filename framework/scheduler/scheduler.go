@@ -48,9 +48,8 @@ func (s *Scheduler) ScheduleUpdates() {
 }
 
 func (s *Scheduler) ScheduleDrawings(screen *ebiten.Image) {
-	op := &ebiten.DrawImageOptions{}
 
 	for _, comp := range s.GetComponentsToDraw() {
-		screen.DrawImage(comp.GetSprite(), op)
+		screen.DrawImage(comp.GetSprite(), comp.GetOptions())
 	}
 }

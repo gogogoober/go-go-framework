@@ -72,6 +72,15 @@ var KeyMap = map[string]GoGoKey{
 func IsKeyStringPressed(keys ...string) bool {
 	for _, key := range keys {
 		if k, ok := KeyMap[key]; ok {
+			return ebiten.IsKeyPressed(k)
+		}
+	}
+	return false
+}
+
+func IsKeyStringJustPressed(keys ...string) bool {
+	for _, key := range keys {
+		if k, ok := KeyMap[key]; ok {
 			return inpututil.IsKeyJustPressed(k)
 		}
 	}
@@ -79,5 +88,5 @@ func IsKeyStringPressed(keys ...string) bool {
 }
 
 func IsKeyPressed(key GoGoKey) bool {
-	return inpututil.IsKeyJustPressed(key)
+	return ebiten.IsKeyPressed(key)
 }
