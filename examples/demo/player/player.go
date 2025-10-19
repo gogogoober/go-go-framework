@@ -23,7 +23,7 @@ func NewPlayerComponent(isPlayer bool) *PlayerComponent {
 	op := ebiten.DrawImageOptions{}
 	var w = rect.Bounds()
 
-	startP := entity.Position{0, 0, w.Size().X, w.Size().Y}
+	startP := entity.Position{X: 0, Y: 0, Width: w.Size().X, Hight: w.Size().Y}
 
 	if !isPlayer {
 		op.GeoM.Translate(100, 100)
