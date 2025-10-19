@@ -1,10 +1,8 @@
 package scheduler
 
 import (
-	"fmt"
 	"go-go-Framework/framework/entity"
 	"go-go-Framework/framework/registry"
-	"go-go-Framework/framework/services/collisionservice"
 
 	"github.com/hajimehoshi/ebiten/v2"
 )
@@ -27,15 +25,15 @@ func (s *Scheduler) GetComponentsToDraw() []entity.Component {
 		items = append(items, s)
 	}
 
-	// for _, s := range s.registry.Npcs {
-	// 	items = append(items, s)
-	// }
+	for _, s := range s.registry.Npcs {
+		items = append(items, s)
+	}
 
 	return items
 }
 
-func (s *Scheduler) GetComponents() []entity.Component {
-	spriteCount := len(s.registry.Npcs) + len(s.registry.Players)
+func (s *Scheduler) GetPlayersComponents() []entity.Component {
+	spriteCount := len(s.registry.Players)
 	var items = make([]entity.Component, 0, spriteCount)
 
 	for _, s := range s.registry.Players {
@@ -44,13 +42,24 @@ func (s *Scheduler) GetComponents() []entity.Component {
 	return items
 }
 
+func (s *Scheduler) GetNpcsComponents() []entity.Component {
+	spriteCount := len(s.registry.Npcs)
+	var items = make([]entity.Component, 0, spriteCount)
+
+	for _, s := range s.registry.Npcs {
+		items = append(items, s)
+	}
+	return items
+}
+
 func (s *Scheduler) ScheduleUpdates() {
-	var cc = s.GetComponents()
-	if collisionservice.AreComponentsColliding(cc[0], cc[1]) {
-		fmt.Print("Collide")
+
+	for _, c := range s.GetPlayersComponents() {
+		c.SetNpcs(s.GetNpcsComponents())
+		c.Update()
 	}
 
-	for _, c := range s.GetComponents() {
+	for _, c := range s.GetNpcsComponents() {
 		c.Update()
 	}
 }

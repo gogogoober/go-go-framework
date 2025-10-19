@@ -3,6 +3,7 @@ package player
 import (
 	"fmt"
 	"go-go-Framework/framework/entity"
+	"go-go-Framework/framework/services/collisionservice"
 	"go-go-Framework/framework/services/inputservice"
 	"go-go-Framework/framework/utils"
 	"image/color"
@@ -11,21 +12,28 @@ import (
 )
 
 type PlayerComponent struct {
-	isPlayer bool
-	sprites  []*ebiten.Image
-	op       ebiten.DrawImageOptions
+	IsPlayerControled bool
+	sprites           []*ebiten.Image
+	op                ebiten.DrawImageOptions
 	entity.Component
 	entity.Position
+	npcs []entity.Component
 }
 
-func NewPlayerComponent(isPlayer bool) *PlayerComponent {
+type NewPlayerParams struct {
+	IsPlayerControled bool
+	X                 int
+	Y                 int
+}
+
+func NewPlayerComponent(playerParams NewPlayerParams) *PlayerComponent {
 	rect := utils.NewRect(120, 80, color.RGBA{60, 160, 255, 255})
 	op := ebiten.DrawImageOptions{}
 	var w = rect.Bounds()
 
 	startP := entity.Position{X: 0, Y: 0, Width: w.Size().X, Hight: w.Size().Y}
 
-	if !isPlayer {
+	if !playerParams.IsPlayerControled {
 		op.GeoM.Translate(100, 100)
 		startP.X = 100
 		startP.Y = 100
@@ -33,10 +41,10 @@ func NewPlayerComponent(isPlayer bool) *PlayerComponent {
 	fmt.Print(w.Size())
 
 	return &PlayerComponent{
-		sprites:  []*ebiten.Image{rect},
-		op:       op,
-		Position: startP,
-		isPlayer: isPlayer,
+		sprites:           []*ebiten.Image{rect},
+		op:                op,
+		Position:          startP,
+		IsPlayerControled: playerParams.IsPlayerControled,
 	}
 }
 
@@ -53,12 +61,34 @@ func (pc *PlayerComponent) GetPosition() *entity.Position {
 }
 
 func (pc *PlayerComponent) Update() {
-	if pc.isPlayer {
-		pc.handleMovement()
+
+	if pc.IsPlayerControled {
+		pc.handleMovement(pc.npcs)
 	}
+	// pc.npc = make([]entity.Component, 0)
 }
 
-func (pc *PlayerComponent) handleMovement() {
+func (pc *PlayerComponent) SetNpcs(npcs []entity.Component) {
+	pc.npcs = npcs
+
+}
+
+func (pc *PlayerComponent) handleMovement(npcs []entity.Component) {
+	var isColliding = false
+	if pc.IsPlayerControled {
+		for _, n := range npcs {
+			if collisionservice.AreComponentsColliding(pc, n) {
+				fmt.Print("colliding")
+				isColliding = true
+
+			}
+		}
+	}
+	if isColliding {
+		return
+
+	}
+
 	var dx = int(0)
 	var dy = int(0)
 	if inputservice.IsKeyStringPressed("w") {

@@ -14,5 +14,6 @@ type Component interface {
 	GetSprite() *ebiten.Image
 	GetOptions() *ebiten.DrawImageOptions
 	GetPosition() *Position
+	SetNpcs([]Component)
 	Update()
 }

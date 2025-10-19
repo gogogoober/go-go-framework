@@ -9,13 +9,13 @@ import (
 type Registry struct {
 	Scene   *ebiten.Image
 	Players []entity.Component //Component stores an abstract type, only use pointers for concrete types
-	Npcs    []*ebiten.Image
+	Npcs    []entity.Component
 }
 
 func NewRegistry() *Registry {
 	return &Registry{
 		Players: make([]entity.Component, 0),
-		Npcs:    make([]*ebiten.Image, 0),
+		Npcs:    make([]entity.Component, 0),
 	}
 }
 
@@ -27,6 +27,6 @@ func (r *Registry) AddPlayer(p entity.Component) {
 	r.Players = append(r.Players, p)
 }
 
-func (r *Registry) AddNpc(n *ebiten.Image) {
+func (r *Registry) AddNpc(n entity.Component) {
 	r.Npcs = append(r.Npcs, n)
 }
