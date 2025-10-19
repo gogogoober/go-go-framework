@@ -30,7 +30,8 @@ func RunDemo() {
 		framework: framework.NewGoGoFramework(framework.GoGoFrameworkNewParams{"Game Name", window.GoGoWindow{620, 620}}),
 	}
 
-	demo.framework.Registry.AddPlayer(player.NewPlayerComponent())
+	demo.framework.Registry.AddPlayer(player.NewPlayerComponent(true))
+	demo.framework.Registry.AddPlayer(player.NewPlayerComponent(false))
 	demo.framework.Init()
 
 	err := ebiten.RunGame(demo)

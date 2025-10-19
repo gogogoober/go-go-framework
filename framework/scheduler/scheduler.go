@@ -1,8 +1,10 @@
 package scheduler
 
 import (
+	"fmt"
 	"go-go-Framework/framework/entity"
 	"go-go-Framework/framework/registry"
+	"go-go-Framework/framework/services/collisionservice"
 
 	"github.com/hajimehoshi/ebiten/v2"
 )
@@ -43,6 +45,11 @@ func (s *Scheduler) GetComponents() []entity.Component {
 }
 
 func (s *Scheduler) ScheduleUpdates() {
+	var cc = s.GetComponents()
+	if collisionservice.AreComponentsColliding(cc[0], cc[1]) {
+		fmt.Print("Collide")
+	}
+
 	for _, c := range s.GetComponents() {
 		c.Update()
 	}

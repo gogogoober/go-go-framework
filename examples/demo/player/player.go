@@ -1,6 +1,7 @@
 package player
 
 import (
+	"fmt"
 	"go-go-Framework/framework/entity"
 	"go-go-Framework/framework/services/inputservice"
 	"go-go-Framework/framework/utils"
@@ -10,22 +11,32 @@ import (
 )
 
 type PlayerComponent struct {
+	isPlayer bool
+	sprites  []*ebiten.Image
+	op       ebiten.DrawImageOptions
 	entity.Component
-	X       int
-	Y       int
-	sprites []*ebiten.Image
-	op      ebiten.DrawImageOptions
+	entity.Position
 }
 
-func NewPlayerComponent() *PlayerComponent {
+func NewPlayerComponent(isPlayer bool) *PlayerComponent {
 	rect := utils.NewRect(120, 80, color.RGBA{60, 160, 255, 255})
 	op := ebiten.DrawImageOptions{}
+	var w = rect.Bounds()
+
+	startP := entity.Position{0, 0, w.Size().X, w.Size().Y}
+
+	if !isPlayer {
+		op.GeoM.Translate(100, 100)
+		startP.X = 100
+		startP.Y = 100
+	}
+	fmt.Print(w.Size())
 
 	return &PlayerComponent{
-		X:       0,
-		Y:       0,
-		sprites: []*ebiten.Image{rect},
-		op:      op,
+		sprites:  []*ebiten.Image{rect},
+		op:       op,
+		Position: startP,
+		isPlayer: isPlayer,
 	}
 }
 
@@ -37,40 +48,51 @@ func (pc *PlayerComponent) GetOptions() *ebiten.DrawImageOptions {
 	return &pc.op
 }
 
+func (pc *PlayerComponent) GetPosition() *entity.Position {
+	return &pc.Position
+}
+
 func (pc *PlayerComponent) Update() {
-	pc.handleMovement()
+	if pc.isPlayer {
+		pc.handleMovement()
+	}
 }
 
 func (pc *PlayerComponent) handleMovement() {
+	var dx = int(0)
+	var dy = int(0)
 	if inputservice.IsKeyStringPressed("w") {
-		pc.op.GeoM.Translate(moveUp())
+		dx, dy = moveUp()
 	}
 
 	if inputservice.IsKeyStringPressed("a") {
-		pc.op.GeoM.Translate(moveLeft())
+		dx, dy = moveLeft()
 	}
 
 	if inputservice.IsKeyStringPressed("s") {
-		pc.op.GeoM.Translate(moveDown())
+		dx, dy = moveDown()
 	}
 
 	if inputservice.IsKeyStringPressed("d") {
-		pc.op.GeoM.Translate(moveRight())
+		dx, dy = moveRight()
 	}
+	pc.Position.X += dx
+	pc.Position.Y += dy
+	pc.op.GeoM.Translate(float64(dx), float64(dy))
 }
 
-func moveUp() (dx float64, dy float64) {
+func moveUp() (dx, dy int) {
 	return 0, -5
 }
 
-func moveDown() (dx float64, dy float64) {
+func moveDown() (dx, dy int) {
 	return 0, 5
 }
 
-func moveRight() (dx float64, dy float64) {
+func moveRight() (dx, dy int) {
 	return 5, 0
 }
 
-func moveLeft() (dx float64, dy float64) {
+func moveLeft() (dx, dy int) {
 	return -5, 0
 }
