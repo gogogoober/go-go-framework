@@ -33,6 +33,8 @@ func NewPlayerComponent(playerParams NewPlayerParams) *PlayerComponent {
 
 	startP := entity.Position{X: 0, Y: 0, Width: w.Size().X, Hight: w.Size().Y}
 
+	fmt.Print(startP)
+
 	if !playerParams.IsPlayerControled {
 		op.GeoM.Translate(100, 100)
 		startP.X = 100
@@ -63,9 +65,10 @@ func (pc *PlayerComponent) GetPosition() *entity.Position {
 func (pc *PlayerComponent) Update() {
 
 	if pc.IsPlayerControled {
-		pc.handleMovement(pc.npcs)
+		pc.handleMovement()
 	}
-	// pc.npc = make([]entity.Component, 0)
+	pc.npcs = make([]entity.Component, 0)
+
 }
 
 func (pc *PlayerComponent) SetNpcs(npcs []entity.Component) {
@@ -73,21 +76,11 @@ func (pc *PlayerComponent) SetNpcs(npcs []entity.Component) {
 
 }
 
-func (pc *PlayerComponent) handleMovement(npcs []entity.Component) {
-	var isColliding = false
-	if pc.IsPlayerControled {
-		for _, n := range npcs {
-			if collisionservice.AreComponentsColliding(pc, n) {
-				fmt.Print("colliding")
-				isColliding = true
+func (pc *PlayerComponent) handleMovement() {
+	var isColliding = pc.checkCollision()
 
-			}
-		}
-	}
-	if isColliding {
-		return
-
-	}
+	var x = pc.Position.X
+	var y = pc.Position.Y
 
 	var dx = int(0)
 	var dy = int(0)
@@ -108,7 +101,28 @@ func (pc *PlayerComponent) handleMovement(npcs []entity.Component) {
 	}
 	pc.Position.X += dx
 	pc.Position.Y += dy
+
+	var willCollide = pc.checkCollision()
+
+	if isColliding && willCollide {
+		pc.Position.X = x
+		pc.Position.Y = y
+		return
+
+	}
+
 	pc.op.GeoM.Translate(float64(dx), float64(dy))
+}
+
+func (pc *PlayerComponent) checkCollision() bool {
+	for _, n := range pc.npcs {
+		if collisionservice.AreComponentsColliding(pc, n) {
+			fmt.Print("colliding")
+			return true
+
+		}
+	}
+	return false
 }
 
 func moveUp() (dx, dy int) {
