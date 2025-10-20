@@ -4,39 +4,33 @@ import (
 	"go-go-Framework/framework/entity"
 )
 
-func AreComponentsColliding(c1X entity.Component, c2X entity.Component) bool {
-	// If the x + W && y + h overlap, its a collision
+func AreComponentsColliding(c1 entity.Component, c2 entity.Component) bool {
+	p1 := c1.GetPosition()
+	p2 := c2.GetPosition()
 
-	c1 := c1X.GetPosition()
-	c2 := c2X.GetPosition()
+	left1, right1 := p1.X, p1.X+p1.Width
+	top1, bottom1 := p1.Y, p1.Y+p1.Hight
+	left2, right2 := p2.X, p2.X+p2.Width
+	top2, bottom2 := p2.Y, p2.Y+p2.Hight
 
-	if c1.X <= c2.X && c2.X <= c1.X+c1.Width {
-		if c1.Y <= c2.Y && c2.Y <= (c1.Y+c1.Hight) {
-			// fmt.Print("Collide")
-			return true
-		}
-	}
+	return left1 < right2 && right1 > left2 &&
+		top1 < bottom2 && bottom1 > top2
+}
 
-	if c2.X <= c1.X && c1.X <= c2.X+c2.Width {
-		if c2.Y <= c1.Y && c1.Y <= (c2.Y+c2.Hight) {
-			// fmt.Print("Collide")
-			return true
-		}
-	}
+func AreComponentsTouching(c1 entity.Component, c2 entity.Component) bool {
+	p1 := c1.GetPosition()
+	p2 := c2.GetPosition()
 
-	if c1.X <= c2.X+c2.Width && c2.X+c2.Width <= c1.X+c1.Width {
-		if c1.Y <= c2.Y && c2.Y <= (c1.Y+c1.Hight) {
-			// fmt.Print("Collide")
-			return true
-		}
-	}
+	left1, right1 := p1.X, p1.X+p1.Width
+	top1, bottom1 := p1.Y, p1.Y+p1.Hight
+	left2, right2 := p2.X, p2.X+p2.Width
+	top2, bottom2 := p2.Y, p2.Y+p2.Hight
 
-	if c1.X <= c2.X && c2.X <= c1.X+c1.Width {
-		if c1.Y <= c2.Y+c2.Hight && c2.Y+c2.Hight <= c1.Y+c1.Hight {
-			// fmt.Print("Collide")
-			return true
-		}
-	}
+	horizontalTouch := right1 == left2 || right2 == left1
+	verticalTouch := bottom1 == top2 || bottom2 == top1
+	horizontalOverlap := bottom1 > top2 && top1 < bottom2
+	verticalOverlap := right1 > left2 && left1 < right2
 
-	return false
+	return (horizontalTouch && horizontalOverlap) ||
+		(verticalTouch && verticalOverlap)
 }
