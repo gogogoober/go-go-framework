@@ -77,7 +77,7 @@ func (pc *PlayerComponent) SetNpcs(npcs []entity.Component) {
 }
 
 func (pc *PlayerComponent) handleMovement() {
-	var isColliding = pc.checkTouching()
+	var isTouching = pc.checkTouching()
 
 	var x = pc.Position.X
 	var y = pc.Position.Y
@@ -104,7 +104,7 @@ func (pc *PlayerComponent) handleMovement() {
 
 	var willCollide = pc.checkCollision()
 
-	if isColliding && willCollide {
+	if isTouching && willCollide {
 		pc.Position.X = x
 		pc.Position.Y = y
 		return
