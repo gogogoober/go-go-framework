@@ -1,19 +1,16 @@
 package entity
 
-import "github.com/hajimehoshi/ebiten/v2"
+import (
+	"go-go-Framework/framework/services/positionservice"
 
-type Position struct {
-	X     int
-	Y     int
-	Width int
-	Hight int
-}
+	"github.com/hajimehoshi/ebiten/v2"
+)
 
 type Component interface {
 	SetSprite(sprite *ebiten.Image)
 	GetSprite() *ebiten.Image
 	GetOptions() *ebiten.DrawImageOptions
-	GetPosition() *Position
+	GetPosition() *positionservice.Position
 	SetNpcs([]Component)
 	Update()
 }

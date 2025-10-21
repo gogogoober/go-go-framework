@@ -1,6 +1,7 @@
 package demo
 
 import (
+	"go-go-Framework/examples/demo/npc"
 	"go-go-Framework/examples/demo/player"
 	"go-go-Framework/framework"
 	"go-go-Framework/framework/window"
@@ -27,11 +28,11 @@ func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeigh
 
 func RunDemo() {
 	demo := &Game{
-		framework: framework.NewGoGoFramework(framework.GoGoFrameworkNewParams{"Game Name", window.GoGoWindow{620, 620}}),
+		framework: framework.NewGoGoFramework(framework.GoGoFrameworkNewParams{GameName: "Game Name", GoGoWindow: window.GoGoWindow{Width: 620, Height: 620}}),
 	}
 
 	demo.framework.Registry.AddPlayer(player.NewPlayerComponent(player.NewPlayerParams{IsPlayerControled: true, X: 0, Y: 0}))
-	demo.framework.Registry.AddNpc(player.NewPlayerComponent(player.NewPlayerParams{IsPlayerControled: false, X: 100, Y: 100}))
+	demo.framework.Registry.AddNpc(npc.NewNpcComponent())
 	demo.framework.Init()
 
 	err := ebiten.RunGame(demo)

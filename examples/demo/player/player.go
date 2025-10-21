@@ -1,10 +1,10 @@
 package player
 
 import (
-	"fmt"
 	"go-go-Framework/framework/entity"
 	"go-go-Framework/framework/services/collisionservice"
 	"go-go-Framework/framework/services/inputservice"
+	"go-go-Framework/framework/services/positionservice"
 	"go-go-Framework/framework/utils"
 	"image/color"
 
@@ -15,8 +15,10 @@ type PlayerComponent struct {
 	IsPlayerControled bool
 	sprites           []*ebiten.Image
 	op                ebiten.DrawImageOptions
+	width             int
+	height            int
 	entity.Component
-	entity.Position
+	positionservice.Position
 	npcs []entity.Component
 }
 
@@ -30,22 +32,12 @@ func NewPlayerComponent(playerParams NewPlayerParams) *PlayerComponent {
 	rect := utils.NewRect(120, 80, color.RGBA{60, 160, 255, 255})
 	op := ebiten.DrawImageOptions{}
 	var w = rect.Bounds()
-
-	startP := entity.Position{X: 0, Y: 0, Width: w.Size().X, Hight: w.Size().Y}
-
-	fmt.Print(startP)
-
-	if !playerParams.IsPlayerControled {
-		op.GeoM.Translate(100, 100)
-		startP.X = 100
-		startP.Y = 100
-	}
-	fmt.Print(w.Size())
-
 	return &PlayerComponent{
 		sprites:           []*ebiten.Image{rect},
 		op:                op,
-		Position:          startP,
+		width:             w.Size().X,
+		height:            w.Size().Y,
+		Position:          positionservice.GetRectanglePosition(0, 0, w.Size().X, w.Size().Y),
 		IsPlayerControled: playerParams.IsPlayerControled,
 	}
 }
@@ -58,7 +50,7 @@ func (pc *PlayerComponent) GetOptions() *ebiten.DrawImageOptions {
 	return &pc.op
 }
 
-func (pc *PlayerComponent) GetPosition() *entity.Position {
+func (pc *PlayerComponent) GetPosition() *positionservice.Position {
 	return &pc.Position
 }
 
@@ -99,14 +91,14 @@ func (pc *PlayerComponent) handleMovement() {
 	if inputservice.IsKeyStringPressed("d") {
 		dx, dy = moveRight()
 	}
-	pc.Position.X += dx
-	pc.Position.Y += dy
+	newX := x + dx
+	newY := y + dy
+	pc.Position = positionservice.GetRectanglePosition(newX, newY, pc.width, pc.height)
 
 	var willCollide = pc.checkCollision()
 
 	if isTouching && willCollide {
-		pc.Position.X = x
-		pc.Position.Y = y
+		pc.Position = positionservice.GetRectanglePosition(x, y, pc.width, pc.height)
 		return
 
 	}

@@ -8,10 +8,10 @@ func AreComponentsColliding(c1 entity.Component, c2 entity.Component) bool {
 	p1 := c1.GetPosition()
 	p2 := c2.GetPosition()
 
-	left1, right1 := p1.X, p1.X+p1.Width
-	top1, bottom1 := p1.Y, p1.Y+p1.Hight
-	left2, right2 := p2.X, p2.X+p2.Width
-	top2, bottom2 := p2.Y, p2.Y+p2.Hight
+	left1, right1 := p1.X, p1.X2
+	top1, bottom1 := p1.Y, p1.Y2
+	left2, right2 := p2.X, p2.X2
+	top2, bottom2 := p2.Y, p2.Y2
 
 	return left1 < right2 && right1 > left2 &&
 		top1 < bottom2 && bottom1 > top2
@@ -21,10 +21,10 @@ func AreComponentsTouching(c1 entity.Component, c2 entity.Component) bool {
 	p1 := c1.GetPosition()
 	p2 := c2.GetPosition()
 
-	left1, right1 := p1.X, p1.X+p1.Width
-	top1, bottom1 := p1.Y, p1.Y+p1.Hight
-	left2, right2 := p2.X, p2.X+p2.Width
-	top2, bottom2 := p2.Y, p2.Y+p2.Hight
+	left1, right1 := p1.X, p1.X2
+	top1, bottom1 := p1.Y, p1.Y2
+	left2, right2 := p2.X, p2.X2
+	top2, bottom2 := p2.Y, p2.Y2
 
 	horizontalTouch := right1 == left2 || right2 == left1
 	verticalTouch := bottom1 == top2 || bottom2 == top1
