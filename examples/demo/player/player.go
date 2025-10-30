@@ -111,7 +111,6 @@ func checkCollision(pcPosition positionservice.Position, npcs []entity.Component
 		if collisionservice.AreComponentsColliding(pcPosition, *n.GetPosition()) {
 			return true
 		}
-
 	}
 	return false
 }
