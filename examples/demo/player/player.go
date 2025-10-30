@@ -28,6 +28,8 @@ type NewPlayerParams struct {
 	Y                 int
 }
 
+const moveSpeed = 5
+
 func NewPlayerComponent(playerParams NewPlayerParams) *PlayerComponent {
 	rect := utils.NewRect(120, 80, color.RGBA{60, 160, 255, 255})
 	op := ebiten.DrawImageOptions{}
@@ -69,47 +71,44 @@ func (pc *PlayerComponent) SetNpcs(npcs []entity.Component) {
 }
 
 func (pc *PlayerComponent) handleMovement() {
-	var isTouching = pc.checkTouching()
-
-	var x = pc.Position.X
-	var y = pc.Position.Y
-
 	var dx = int(0)
 	var dy = int(0)
 	if inputservice.IsKeyStringPressed("w") {
-		dx, dy = moveUp()
+		dy -= moveSpeed
 	}
 
 	if inputservice.IsKeyStringPressed("a") {
-		dx, dy = moveLeft()
+		dx -= moveSpeed
 	}
 
 	if inputservice.IsKeyStringPressed("s") {
-		dx, dy = moveDown()
+		dy += moveSpeed
 	}
 
 	if inputservice.IsKeyStringPressed("d") {
-		dx, dy = moveRight()
+		dx += moveSpeed
 	}
-	newX := x + dx
-	newY := y + dy
-	pc.Position = positionservice.GetRectanglePosition(newX, newY, pc.width, pc.height)
 
-	var willCollide = pc.checkCollision()
+	x := pc.Position.X + dx
+	y := pc.Position.Y + dy
+	x2 := pc.Position.X2 + dx
+	y2 := pc.Position.Y2 + dy
 
-	if isTouching && willCollide {
-		pc.Position = positionservice.GetRectanglePosition(x, y, pc.width, pc.height)
+	var newPosition = positionservice.Position{x, y, x2, y2}
+
+	var willCollide = checkCollision(newPosition, pc.npcs)
+
+	if willCollide {
 		return
-
 	}
 
+	pc.Position = newPosition
 	pc.op.GeoM.Translate(float64(dx), float64(dy))
 }
 
-func (pc *PlayerComponent) checkCollision() bool {
-
-	for _, n := range pc.npcs {
-		if collisionservice.AreComponentsColliding(pc, n) {
+func checkCollision(pcPosition positionservice.Position, npcs []entity.Component) bool {
+	for _, n := range npcs {
+		if collisionservice.AreComponentsColliding(pcPosition, *n.GetPosition()) {
 			return true
 		}
 
@@ -128,20 +127,4 @@ func (pc *PlayerComponent) checkTouching() bool {
 
 	}
 	return false
-}
-
-func moveUp() (dx, dy int) {
-	return 0, -5
-}
-
-func moveDown() (dx, dy int) {
-	return 0, 5
-}
-
-func moveRight() (dx, dy int) {
-	return 5, 0
-}
-
-func moveLeft() (dx, dy int) {
-	return -5, 0
 }

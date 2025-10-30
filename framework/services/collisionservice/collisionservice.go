@@ -2,12 +2,10 @@ package collisionservice
 
 import (
 	"go-go-Framework/framework/entity"
+	"go-go-Framework/framework/services/positionservice"
 )
 
-func AreComponentsColliding(c1 entity.Component, c2 entity.Component) bool {
-	p1 := c1.GetPosition()
-	p2 := c2.GetPosition()
-
+func AreComponentsColliding(p1, p2 positionservice.Position) bool {
 	left1, right1 := p1.X, p1.X2
 	top1, bottom1 := p1.Y, p1.Y2
 	left2, right2 := p2.X, p2.X2
