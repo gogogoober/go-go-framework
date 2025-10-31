@@ -9,31 +9,39 @@ import (
 )
 
 type GoGoFramework struct {
-	GameName  string
-	Window    *window.GoGoWindow
 	Registry  *registry.Registry
 	Scheduler *scheduler.Scheduler
+	options   GoGoFrameworkNewOptions
 }
 
-type GoGoFrameworkNewParams struct {
+type GoGoFrameworkNewOptions struct {
 	GameName string
-	window.GoGoWindow
+	Window   *window.GoGoWindow
+	GridSize *window.GoGoWindow
 }
 
-func NewGoGoFramework(params GoGoFrameworkNewParams) *GoGoFramework {
+func NewGoGoFramework(options GoGoFrameworkNewOptions) *GoGoFramework {
 	reg := registry.NewRegistry()
+	if options.GameName == "" {
+		options.GameName = "New Game"
+	}
+	if options.Window == nil {
+		options.Window = &window.GoGoWindow{Width: 500, Height: 500}
+	}
+	if options.GridSize == nil {
+		options.GridSize = &window.GoGoWindow{Width: 1, Height: 1}
+	}
 
 	return &GoGoFramework{
-		GameName:  params.GameName,
 		Registry:  reg,
 		Scheduler: scheduler.NewScheduler(reg),
-		Window:    &params.GoGoWindow,
+		options:   options,
 	}
 }
 
 func (g *GoGoFramework) Init() {
-	ebiten.SetWindowSize(g.Window.Width, g.Window.Height)
-	ebiten.SetWindowTitle(g.GameName)
+	ebiten.SetWindowSize(g.options.Window.Width, g.options.Window.Height)
+	ebiten.SetWindowTitle(g.options.GameName)
 }
 
 func (g *GoGoFramework) Update() error {
@@ -46,5 +54,5 @@ func (g *GoGoFramework) Draw(screen *ebiten.Image) {
 }
 
 func (g *GoGoFramework) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
-	return g.Window.Width, g.Window.Height
+	return g.options.Window.Width, g.options.Window.Height
 }

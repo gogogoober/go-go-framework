@@ -26,20 +26,26 @@ type NewPlayerParams struct {
 	IsPlayerControled bool
 	X                 int
 	Y                 int
+	Width             int
+	Height            int
 }
 
 const moveSpeed = 5
 
 func NewPlayerComponent(playerParams NewPlayerParams) *PlayerComponent {
-	rect := utils.NewRect(120, 80, color.RGBA{60, 160, 255, 255})
+
+	position := positionservice.GetRectanglePosition(playerParams.X-(playerParams.Width/2), playerParams.Y-(playerParams.Height/2), playerParams.Width, playerParams.Height)
+
+	rect := utils.NewRect(float32(playerParams.Width), float32(playerParams.Height), color.RGBA{60, 160, 255, 255})
 	op := ebiten.DrawImageOptions{}
+	op.GeoM.Translate(float64(position.X), float64(position.Y))
 	var w = rect.Bounds()
 	return &PlayerComponent{
 		sprites:           []*ebiten.Image{rect},
 		op:                op,
 		width:             w.Size().X,
 		height:            w.Size().Y,
-		Position:          positionservice.GetRectanglePosition(0, 0, w.Size().X, w.Size().Y),
+		Position:          position,
 		IsPlayerControled: playerParams.IsPlayerControled,
 	}
 }

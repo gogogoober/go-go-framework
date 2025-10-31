@@ -27,11 +27,20 @@ func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeigh
 }
 
 func RunDemo() {
-	demo := &Game{
-		framework: framework.NewGoGoFramework(framework.GoGoFrameworkNewParams{GameName: "Game Name", GoGoWindow: window.GoGoWindow{Width: 620, Height: 620}}),
+	var width = 500
+	var height = 500
+	var grid = 10
+
+	var gameOptions = framework.GoGoFrameworkNewOptions{
+		Window:   &window.GoGoWindow{Width: width, Height: height},
+		GridSize: &window.GoGoWindow{Width: grid, Height: grid},
 	}
 
-	demo.framework.Registry.AddPlayer(player.NewPlayerComponent(player.NewPlayerParams{IsPlayerControled: true, X: 0, Y: 0}))
+	demo := &Game{
+		framework: framework.NewGoGoFramework(gameOptions),
+	}
+
+	demo.framework.Registry.AddPlayer(player.NewPlayerComponent(player.NewPlayerParams{IsPlayerControled: true, X: width / 2, Y: width / 2, Width: width / grid, Height: height / grid}))
 	demo.framework.Registry.AddNpc(npc.NewNpcComponent())
 	demo.framework.Init()
 
