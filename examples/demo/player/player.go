@@ -84,7 +84,7 @@ func (pc *PlayerComponent) handleMovement() {
 		dx -= moveSpeed
 	}
 
-	if checkCollision(positionservice.MovePosition(pc.Position, dx, dy), pc.npcs) {
+	if collisionservice.CheckCollision(positionservice.MovePosition(pc.Position, dx, dy), pc.npcs) {
 		dx = 0
 	}
 
@@ -95,32 +95,10 @@ func (pc *PlayerComponent) handleMovement() {
 		dy += moveSpeed
 	}
 
-	if checkCollision(positionservice.MovePosition(pc.Position, dx, dy), pc.npcs) {
+	if collisionservice.CheckCollision(positionservice.MovePosition(pc.Position, dx, dy), pc.npcs) {
 		dy = 0
 	}
 
 	pc.Position = positionservice.MovePosition(pc.Position, dx, dy)
 	pc.op.GeoM.Translate(float64(dx), float64(dy))
-}
-
-func checkCollision(pcPosition positionservice.Position, npcs []entity.Component) bool {
-	for _, n := range npcs {
-		if collisionservice.AreComponentsColliding(pcPosition, *n.GetPosition()) {
-			return true
-		}
-	}
-	return false
-}
-
-func (pc *PlayerComponent) checkTouching() bool {
-
-	for _, n := range pc.npcs {
-
-		if collisionservice.AreComponentsTouching(pc, n) {
-			return true
-
-		}
-
-	}
-	return false
 }

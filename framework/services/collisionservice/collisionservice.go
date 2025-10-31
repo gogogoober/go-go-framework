@@ -5,6 +5,15 @@ import (
 	"go-go-Framework/framework/services/positionservice"
 )
 
+func CheckCollision(pcPosition positionservice.Position, npcs []entity.Component) bool {
+	for _, n := range npcs {
+		if AreComponentsColliding(pcPosition, *n.GetPosition()) {
+			return true
+		}
+	}
+	return false
+}
+
 func AreComponentsColliding(p1, p2 positionservice.Position) bool {
 	left1, right1 := p1.X, p1.X2
 	top1, bottom1 := p1.Y, p1.Y2
