@@ -36,11 +36,13 @@ func RunDemo() {
 		GridSize: &window.GoGoWindow{Width: grid, Height: grid},
 	}
 
+	var framework = framework.NewGoGoFramework(gameOptions)
+
 	demo := &Game{
-		framework: framework.NewGoGoFramework(gameOptions),
+		framework: framework,
 	}
 
-	demo.framework.Registry.AddPlayer(player.NewPlayerComponent(player.NewPlayerParams{IsPlayerControled: true, X: width / 2, Y: width / 2, Width: width / grid, Height: height / grid}))
+	demo.framework.Registry.AddPlayer(player.NewPlayerComponent(player.NewPlayerParams{IsPlayerControled: true, X: width / 2, Y: width / 2, Width: width / grid, Height: height / grid, Framework: framework}))
 	demo.framework.Registry.AddNpc(npc.NewNpcComponent())
 	demo.framework.Init()
 

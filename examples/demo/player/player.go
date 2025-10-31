@@ -1,6 +1,7 @@
 package player
 
 import (
+	"go-go-Framework/framework"
 	"go-go-Framework/framework/entity"
 	"go-go-Framework/framework/services/collisionservice"
 	"go-go-Framework/framework/services/inputservice"
@@ -13,38 +14,49 @@ import (
 
 type PlayerComponent struct {
 	IsPlayerControled bool
+	lastKeyPressed    string
 	sprites           []*ebiten.Image
+	body              []*entity.Component
 	op                ebiten.DrawImageOptions
 	width             int
 	height            int
 	moveDistance      int
 	entity.Component
 	positionservice.Position
-	npcs []entity.Component
+	npcs      []entity.Component
+	Framework *framework.GoGoFramework
 }
 
 type NewPlayerParams struct {
 	IsPlayerControled bool
+	lastKeyPressed    string
 	X                 int
 	Y                 int
 	Width             int
 	Height            int
+	Framework         *framework.GoGoFramework
 }
 
 func NewPlayerComponent(playerParams NewPlayerParams) *PlayerComponent {
-	position := positionservice.GetRectanglePosition(playerParams.X-(playerParams.Width/2), playerParams.Y-(playerParams.Height/2), playerParams.Width, playerParams.Height)
+	position := positionservice.GetRectanglePosition(playerParams.X, playerParams.Y, playerParams.Width, playerParams.Height)
+
+	if playerParams.lastKeyPressed == "" {
+		playerParams.lastKeyPressed = "a"
+	}
 
 	rect := utils.NewRect(float32(playerParams.Width), float32(playerParams.Height), color.RGBA{60, 160, 255, 255})
 	op := ebiten.DrawImageOptions{}
 	op.GeoM.Translate(float64(position.X), float64(position.Y))
 	return &PlayerComponent{
 		sprites:           []*ebiten.Image{rect},
+		lastKeyPressed:    playerParams.lastKeyPressed,
 		op:                op,
 		width:             playerParams.Width,
 		height:            playerParams.Height,
 		moveDistance:      playerParams.Width,
 		Position:          position,
 		IsPlayerControled: playerParams.IsPlayerControled,
+		Framework:         playerParams.Framework,
 	}
 }
 
@@ -62,8 +74,11 @@ func (pc *PlayerComponent) GetPosition() *positionservice.Position {
 
 func (pc *PlayerComponent) Update(tick int) {
 
-	if pc.IsPlayerControled && tick%60 == 0 {
-		pc.handleMovement()
+	if pc.IsPlayerControled {
+		pc.lastKeyPressed = lastKeyPressed(pc.lastKeyPressed)
+		if tick%60 == 0 {
+			pc.handleMovement(pc.lastKeyPressed)
+		}
 	}
 	pc.npcs = make([]entity.Component, 0)
 
@@ -74,14 +89,31 @@ func (pc *PlayerComponent) SetNpcs(npcs []entity.Component) {
 
 }
 
-func (pc *PlayerComponent) handleMovement() {
+func lastKeyPressed(lastKey string) string {
+	if inputservice.IsKeyStringPressed("d") {
+		return "d"
+	}
+	if inputservice.IsKeyStringPressed("a") {
+		return "a"
+	}
+	if inputservice.IsKeyStringPressed("w") {
+		return "w"
+	}
+	if inputservice.IsKeyStringPressed("s") {
+		return "s"
+	}
+
+	return lastKey
+}
+
+func (pc *PlayerComponent) handleMovement(lastKeyPressed string) {
 	var dx = int(0)
 	var dy = int(0)
 
-	if inputservice.IsKeyStringPressed("d") {
+	if inputservice.IsKeyStringPressed("d") || lastKeyPressed == "d" {
 		dx += pc.moveDistance
 	}
-	if inputservice.IsKeyStringPressed("a") {
+	if inputservice.IsKeyStringPressed("a") || lastKeyPressed == "a" {
 		dx -= pc.moveDistance
 	}
 
@@ -89,16 +121,29 @@ func (pc *PlayerComponent) handleMovement() {
 		dx = 0
 	}
 
-	if inputservice.IsKeyStringPressed("w") {
+	if inputservice.IsKeyStringPressed("w") || lastKeyPressed == "w" {
 		dy -= pc.moveDistance
 	}
-	if inputservice.IsKeyStringPressed("s") {
+	if inputservice.IsKeyStringPressed("s") || lastKeyPressed == "s" {
 		dy += pc.moveDistance
 	}
 
 	if collisionservice.CheckCollision(positionservice.MovePosition(pc.Position, dx, dy), pc.npcs) {
 		dy = 0
 	}
-	pc.Position = positionservice.MovePosition(pc.Position, dx, dy)
-	pc.op.GeoM.Translate(float64(dx), float64(dy))
+
+	var newPosition = positionservice.MovePosition(pc.Position, dx, dy)
+
+	var newBody = NewPlayerComponent(NewPlayerParams{
+		IsPlayerControled: true,
+		X:                 newPosition.X,
+		Y:                 newPosition.Y,
+		Width:             pc.width,
+		Height:            pc.height,
+		Framework:         pc.Framework,
+		lastKeyPressed:    pc.lastKeyPressed,
+	})
+
+	pc.Framework.Registry.AddPlayer(newBody)
+	pc.IsPlayerControled = false
 }
