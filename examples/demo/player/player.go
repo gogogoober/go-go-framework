@@ -1,6 +1,7 @@
 package player
 
 import (
+	"fmt"
 	"go-go-Framework/framework"
 	"go-go-Framework/framework/entity"
 	"go-go-Framework/framework/services/collisionservice"
@@ -13,6 +14,7 @@ import (
 )
 
 type PlayerComponent struct {
+	Index             int
 	IsPlayerControled bool
 	lastKeyPressed    string
 	sprites           []*ebiten.Image
@@ -24,10 +26,12 @@ type PlayerComponent struct {
 	entity.Component
 	positionservice.Position
 	npcs      []entity.Component
+	players   []entity.Component
 	Framework *framework.GoGoFramework
 }
 
 type NewPlayerParams struct {
+	Index             int
 	IsPlayerControled bool
 	lastKeyPressed    string
 	X                 int
@@ -44,10 +48,11 @@ func NewPlayerComponent(playerParams NewPlayerParams) *PlayerComponent {
 		playerParams.lastKeyPressed = "a"
 	}
 
-	rect := utils.NewRect(float32(playerParams.Width), float32(playerParams.Height), color.RGBA{60, 160, 255, 255})
+	rect := utils.NewRect(float32(playerParams.Width-1), float32(playerParams.Height-1), color.RGBA{60, 160, 255, 255})
 	op := ebiten.DrawImageOptions{}
 	op.GeoM.Translate(float64(position.X), float64(position.Y))
 	return &PlayerComponent{
+		Index:             playerParams.Index,
 		sprites:           []*ebiten.Image{rect},
 		lastKeyPressed:    playerParams.lastKeyPressed,
 		op:                op,
@@ -86,7 +91,10 @@ func (pc *PlayerComponent) Update(tick int) {
 
 func (pc *PlayerComponent) SetNpcs(npcs []entity.Component) {
 	pc.npcs = npcs
+}
 
+func (pc *PlayerComponent) SetPlayers(players []entity.Component) {
+	pc.players = players
 }
 
 func lastKeyPressed(lastKey string) string {
@@ -110,15 +118,13 @@ func (pc *PlayerComponent) handleMovement(lastKeyPressed string) {
 	var dx = int(0)
 	var dy = int(0)
 
+	var collidable = pc.players
+
 	if inputservice.IsKeyStringPressed("d") || lastKeyPressed == "d" {
 		dx += pc.moveDistance
 	}
 	if inputservice.IsKeyStringPressed("a") || lastKeyPressed == "a" {
 		dx -= pc.moveDistance
-	}
-
-	if collisionservice.CheckCollision(positionservice.MovePosition(pc.Position, dx, dy), pc.npcs) {
-		dx = 0
 	}
 
 	if inputservice.IsKeyStringPressed("w") || lastKeyPressed == "w" {
@@ -128,13 +134,15 @@ func (pc *PlayerComponent) handleMovement(lastKeyPressed string) {
 		dy += pc.moveDistance
 	}
 
-	if collisionservice.CheckCollision(positionservice.MovePosition(pc.Position, dx, dy), pc.npcs) {
-		dy = 0
+	if collisionservice.CheckCollision(positionservice.MovePosition(pc.Position, dx, dy), collidable) {
+		fmt.Println("Game Over x")
+		panic("gg")
 	}
 
 	var newPosition = positionservice.MovePosition(pc.Position, dx, dy)
 
 	var newBody = NewPlayerComponent(NewPlayerParams{
+		Index:             pc.Index + 1,
 		IsPlayerControled: true,
 		X:                 newPosition.X,
 		Y:                 newPosition.Y,

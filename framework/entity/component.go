@@ -12,5 +12,6 @@ type Component interface {
 	GetOptions() *ebiten.DrawImageOptions
 	GetPosition() *positionservice.Position
 	SetNpcs([]Component)
+	SetPlayers([]Component)
 	Update(tick int)
 }

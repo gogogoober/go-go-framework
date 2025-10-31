@@ -55,9 +55,11 @@ func (s *Scheduler) GetNpcsComponents() []entity.Component {
 func (s *Scheduler) ScheduleUpdates(tick int) {
 
 	npcs := s.GetNpcsComponents()
+	players := s.GetPlayersComponents()
 
-	for _, c := range s.GetPlayersComponents() {
+	for _, c := range players {
 		c.SetNpcs(npcs)
+		c.SetPlayers(players)
 		c.Update(tick)
 	}
 
