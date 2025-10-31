@@ -39,12 +39,11 @@ func NewPlayerComponent(playerParams NewPlayerParams) *PlayerComponent {
 	rect := utils.NewRect(float32(playerParams.Width), float32(playerParams.Height), color.RGBA{60, 160, 255, 255})
 	op := ebiten.DrawImageOptions{}
 	op.GeoM.Translate(float64(position.X), float64(position.Y))
-	var w = rect.Bounds()
 	return &PlayerComponent{
 		sprites:           []*ebiten.Image{rect},
 		op:                op,
-		width:             w.Size().X,
-		height:            w.Size().Y,
+		width:             playerParams.Width,
+		height:            playerParams.Height,
 		Position:          position,
 		IsPlayerControled: playerParams.IsPlayerControled,
 	}
