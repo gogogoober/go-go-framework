@@ -1,7 +1,6 @@
 package player
 
 import (
-	"fmt"
 	"go-go-Framework/framework/entity"
 	"go-go-Framework/framework/services/collisionservice"
 	"go-go-Framework/framework/services/inputservice"
@@ -74,8 +73,6 @@ func (pc *PlayerComponent) SetNpcs(npcs []entity.Component) {
 func (pc *PlayerComponent) handleMovement() {
 	var dx = int(0)
 	var dy = int(0)
-	var newPosition = positionservice.MovePosition(pc.Position, dx, dy)
-	fmt.Println(newPosition)
 
 	if inputservice.IsKeyStringPressed("d") {
 		dx += moveSpeed
