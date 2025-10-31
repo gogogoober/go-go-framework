@@ -9,6 +9,7 @@ import (
 )
 
 type GoGoFramework struct {
+	tickCount int
 	Registry  *registry.Registry
 	Scheduler *scheduler.Scheduler
 	options   GoGoFrameworkNewOptions
@@ -45,7 +46,11 @@ func (g *GoGoFramework) Init() {
 }
 
 func (g *GoGoFramework) Update() error {
-	g.Scheduler.ScheduleUpdates()
+	g.tickCount++
+	if g.tickCount%60 == 0 {
+		g.tickCount = 0
+	}
+	g.Scheduler.ScheduleUpdates(g.tickCount)
 	return nil
 }
 

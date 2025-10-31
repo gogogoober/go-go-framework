@@ -1,6 +1,7 @@
 package player
 
 import (
+	"fmt"
 	"go-go-Framework/framework/entity"
 	"go-go-Framework/framework/services/collisionservice"
 	"go-go-Framework/framework/services/inputservice"
@@ -17,6 +18,7 @@ type PlayerComponent struct {
 	op                ebiten.DrawImageOptions
 	width             int
 	height            int
+	moveDistance      int
 	entity.Component
 	positionservice.Position
 	npcs []entity.Component
@@ -30,9 +32,9 @@ type NewPlayerParams struct {
 	Height            int
 }
 
-const moveSpeed = 5
-
 func NewPlayerComponent(playerParams NewPlayerParams) *PlayerComponent {
+
+	fmt.Println(playerParams)
 
 	position := positionservice.GetRectanglePosition(playerParams.X-(playerParams.Width/2), playerParams.Y-(playerParams.Height/2), playerParams.Width, playerParams.Height)
 
@@ -44,6 +46,7 @@ func NewPlayerComponent(playerParams NewPlayerParams) *PlayerComponent {
 		op:                op,
 		width:             playerParams.Width,
 		height:            playerParams.Height,
+		moveDistance:      playerParams.Width,
 		Position:          position,
 		IsPlayerControled: playerParams.IsPlayerControled,
 	}
@@ -61,9 +64,9 @@ func (pc *PlayerComponent) GetPosition() *positionservice.Position {
 	return &pc.Position
 }
 
-func (pc *PlayerComponent) Update() {
+func (pc *PlayerComponent) Update(tick int) {
 
-	if pc.IsPlayerControled {
+	if pc.IsPlayerControled && tick%60 == 0 {
 		pc.handleMovement()
 	}
 	pc.npcs = make([]entity.Component, 0)
@@ -80,10 +83,10 @@ func (pc *PlayerComponent) handleMovement() {
 	var dy = int(0)
 
 	if inputservice.IsKeyStringPressed("d") {
-		dx += moveSpeed
+		dx += pc.moveDistance
 	}
 	if inputservice.IsKeyStringPressed("a") {
-		dx -= moveSpeed
+		dx -= pc.moveDistance
 	}
 
 	if collisionservice.CheckCollision(positionservice.MovePosition(pc.Position, dx, dy), pc.npcs) {
@@ -91,15 +94,17 @@ func (pc *PlayerComponent) handleMovement() {
 	}
 
 	if inputservice.IsKeyStringPressed("w") {
-		dy -= moveSpeed
+		dy -= pc.moveDistance
 	}
 	if inputservice.IsKeyStringPressed("s") {
-		dy += moveSpeed
+		dy += pc.moveDistance
 	}
 
 	if collisionservice.CheckCollision(positionservice.MovePosition(pc.Position, dx, dy), pc.npcs) {
 		dy = 0
 	}
+
+	fmt.Println(dx, dy)
 
 	pc.Position = positionservice.MovePosition(pc.Position, dx, dy)
 	pc.op.GeoM.Translate(float64(dx), float64(dy))

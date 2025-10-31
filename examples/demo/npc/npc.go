@@ -47,4 +47,4 @@ func (np *NpcComponent) GetPosition() *positionservice.Position {
 func (np *NpcComponent) SetNpcs(npc []entity.Component) {
 	np.npcs = npc
 }
-func (np *NpcComponent) Update() {}
+func (np *NpcComponent) Update(tick int) {}
