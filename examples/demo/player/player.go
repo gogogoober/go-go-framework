@@ -1,7 +1,6 @@
 package player
 
 import (
-	"fmt"
 	"go-go-Framework/framework/entity"
 	"go-go-Framework/framework/services/collisionservice"
 	"go-go-Framework/framework/services/inputservice"
@@ -33,9 +32,6 @@ type NewPlayerParams struct {
 }
 
 func NewPlayerComponent(playerParams NewPlayerParams) *PlayerComponent {
-
-	fmt.Println(playerParams)
-
 	position := positionservice.GetRectanglePosition(playerParams.X-(playerParams.Width/2), playerParams.Y-(playerParams.Height/2), playerParams.Width, playerParams.Height)
 
 	rect := utils.NewRect(float32(playerParams.Width), float32(playerParams.Height), color.RGBA{60, 160, 255, 255})
@@ -103,9 +99,6 @@ func (pc *PlayerComponent) handleMovement() {
 	if collisionservice.CheckCollision(positionservice.MovePosition(pc.Position, dx, dy), pc.npcs) {
 		dy = 0
 	}
-
-	fmt.Println(dx, dy)
-
 	pc.Position = positionservice.MovePosition(pc.Position, dx, dy)
 	pc.op.GeoM.Translate(float64(dx), float64(dy))
 }
