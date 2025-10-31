@@ -73,34 +73,77 @@ func (pc *PlayerComponent) SetNpcs(npcs []entity.Component) {
 func (pc *PlayerComponent) handleMovement() {
 	var dx = int(0)
 	var dy = int(0)
-	if inputservice.IsKeyStringPressed("w") {
-		dy -= moveSpeed
+
+	if inputservice.IsKeyStringPressed("d") {
+		dx += moveSpeed
+
+		x := pc.Position.X + dx
+		x2 := pc.Position.X2 + dx
+		y := pc.Position.Y + dy
+		y2 := pc.Position.Y2 + dy
+
+		var newPosition = positionservice.Position{x, y, x2, y2}
+
+		var willCollide = checkCollision(newPosition, pc.npcs)
+		if willCollide {
+			dx = 0
+		}
 	}
 
 	if inputservice.IsKeyStringPressed("a") {
 		dx -= moveSpeed
+
+		x := pc.Position.X + dx
+		x2 := pc.Position.X2 + dx
+		y := pc.Position.Y + dy
+		y2 := pc.Position.Y2 + dy
+
+		var newPosition = positionservice.Position{x, y, x2, y2}
+
+		var willCollide = checkCollision(newPosition, pc.npcs)
+		if willCollide {
+			dx = 0
+		}
+	}
+
+	if inputservice.IsKeyStringPressed("w") {
+		dy -= moveSpeed
+
+		x := pc.Position.X + dx
+		x2 := pc.Position.X2 + dx
+		y := pc.Position.Y + dy
+		y2 := pc.Position.Y2 + dy
+
+		var newPosition = positionservice.Position{x, y, x2, y2}
+
+		var willCollide = checkCollision(newPosition, pc.npcs)
+		if willCollide {
+			dy = 0
+		}
 	}
 
 	if inputservice.IsKeyStringPressed("s") {
 		dy += moveSpeed
+
+		x := pc.Position.X + dx
+		x2 := pc.Position.X2 + dx
+		y := pc.Position.Y + dy
+		y2 := pc.Position.Y2 + dy
+
+		var newPosition = positionservice.Position{x, y, x2, y2}
+
+		var willCollide = checkCollision(newPosition, pc.npcs)
+		if willCollide {
+			dy = 0
+		}
 	}
 
-	if inputservice.IsKeyStringPressed("d") {
-		dx += moveSpeed
-	}
-
-	x := pc.Position.X + dx
-	y := pc.Position.Y + dy
-	x2 := pc.Position.X2 + dx
-	y2 := pc.Position.Y2 + dy
+	var x = pc.Position.X + dx
+	var x2 = pc.Position.X2 + dx
+	var y = pc.Position.Y + dy
+	var y2 = pc.Position.Y2 + dy
 
 	var newPosition = positionservice.Position{x, y, x2, y2}
-
-	var willCollide = checkCollision(newPosition, pc.npcs)
-
-	if willCollide {
-		return
-	}
 
 	pc.Position = newPosition
 	pc.op.GeoM.Translate(float64(dx), float64(dy))
