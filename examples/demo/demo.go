@@ -1,7 +1,6 @@
 package demo
 
 import (
-	"go-go-Framework/examples/demo/npc"
 	"go-go-Framework/examples/demo/player"
 	"go-go-Framework/framework"
 	"go-go-Framework/framework/window"
@@ -43,7 +42,6 @@ func RunDemo() {
 	}
 
 	demo.framework.Registry.AddPlayer(player.NewPlayerComponent(player.NewPlayerParams{IsPlayerControled: true, X: width / 2, Y: width / 2, Width: width / grid, Height: height / grid, Framework: framework}))
-	demo.framework.Registry.AddNpc(npc.NewNpcComponent())
 	demo.framework.Init()
 
 	err := ebiten.RunGame(demo)
