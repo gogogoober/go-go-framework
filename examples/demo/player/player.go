@@ -99,9 +99,7 @@ func (pc *PlayerComponent) handleMovement() {
 		dy = 0
 	}
 
-	newPosition = positionservice.MovePosition(pc.Position, dx, dy)
-
-	pc.Position = newPosition
+	pc.Position = positionservice.MovePosition(pc.Position, dx, dy)
 	pc.op.GeoM.Translate(float64(dx), float64(dy))
 }
 
