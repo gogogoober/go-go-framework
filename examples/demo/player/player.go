@@ -10,11 +10,15 @@ import (
 	"go-go-Framework/framework/utils"
 	"image/color"
 
+	"github.com/google/uuid"
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
 type PlayerComponent struct {
 	Index             int
+	Id                uuid.UUID
+	Count             int
+	IsDead            bool
 	IsPlayerControled bool
 	lastKeyPressed    string
 	sprites           []*ebiten.Image
@@ -51,6 +55,7 @@ func NewPlayerComponent(playerParams NewPlayerParams) *PlayerComponent {
 	rect := utils.NewRect(float32(playerParams.Width-1), float32(playerParams.Height-1), color.RGBA{60, 160, 255, 255})
 	op := ebiten.DrawImageOptions{}
 	op.GeoM.Translate(float64(position.X), float64(position.Y))
+
 	return &PlayerComponent{
 		Index:             playerParams.Index,
 		sprites:           []*ebiten.Image{rect},
@@ -62,7 +67,14 @@ func NewPlayerComponent(playerParams NewPlayerParams) *PlayerComponent {
 		Position:          position,
 		IsPlayerControled: playerParams.IsPlayerControled,
 		Framework:         playerParams.Framework,
+		Count:             4,
+		IsDead:            false,
+		Id:                uuid.New(),
 	}
+}
+
+func (pc *PlayerComponent) GetId() uuid.UUID {
+	return pc.Id
 }
 
 func (pc *PlayerComponent) GetSprite() *ebiten.Image {
@@ -78,12 +90,16 @@ func (pc *PlayerComponent) GetPosition() *positionservice.Position {
 }
 
 func (pc *PlayerComponent) Update(tick int) {
+	pc.lastKeyPressed = lastKeyPressed(pc.lastKeyPressed)
 
-	if pc.IsPlayerControled {
-		pc.lastKeyPressed = lastKeyPressed(pc.lastKeyPressed)
-		if tick%60 == 0 {
+	if tick%60 == 0 {
+		if pc.IsPlayerControled {
 			pc.handleMovement(pc.lastKeyPressed)
 		}
+		if pc.Count <= 0 {
+			pc.Framework.Registry.RemovePlayerById(pc.Id)
+		}
+		pc.Count--
 	}
 	pc.npcs = make([]entity.Component, 0)
 
