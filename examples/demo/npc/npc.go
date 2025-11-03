@@ -1,7 +1,6 @@
 package npc
 
 import (
-	"fmt"
 	"go-go-Framework/framework"
 	"go-go-Framework/framework/entity"
 	"go-go-Framework/framework/services/positionservice"
@@ -85,10 +84,6 @@ func (np *NpcComponent) SetPlayers(players []entity.Component) {
 	np.players = players
 }
 func (np *NpcComponent) Update(tick int) {
-	if tick%60 == 0 {
-		fmt.Println(np.Position)
-	}
-
 	if tick%60 == 0 && np.contact {
 		var newPos = getNewPosition(np.possiblePossitions, np.players)
 		position := positionservice.GetRectanglePosition(newPos.x, newPos.y, np.sprite.Bounds().Size().X, np.sprite.Bounds().Size().Y)
