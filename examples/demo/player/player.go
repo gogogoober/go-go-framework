@@ -77,6 +77,10 @@ func (pc *PlayerComponent) GetId() string {
 	return pc.Id
 }
 
+func (pc *PlayerComponent) SetContact() {
+	pc.Count = pc.Count + 1
+}
+
 func (pc *PlayerComponent) GetSprite() *ebiten.Image {
 	return pc.sprites[0]
 }
@@ -160,6 +164,11 @@ func (pc *PlayerComponent) handleMovement(lastKeyPressed string) {
 	if len(food) != 0 {
 		for i := range food {
 			food[i].SetContact()
+		}
+
+		// TODO: Need to not remove the last peice on contact or something
+		for i := range pc.players {
+			pc.players[i].SetContact()
 		}
 		newCount++
 	}
