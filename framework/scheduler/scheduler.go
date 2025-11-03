@@ -60,6 +60,14 @@ func (s *Scheduler) ScheduleUpdates(tick int) {
 	for _, c := range players {
 		c.SetNpcs(npcs)
 		c.SetPlayers(players)
+	}
+
+	for _, c := range npcs {
+		c.SetNpcs(npcs)
+		c.SetPlayers(players)
+	}
+
+	for _, c := range players {
 		c.Update(tick)
 	}
 

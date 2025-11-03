@@ -12,7 +12,7 @@ type GoGoFramework struct {
 	tickCount int
 	Registry  *registry.Registry
 	Scheduler *scheduler.Scheduler
-	options   GoGoFrameworkNewOptions
+	Options   GoGoFrameworkNewOptions
 }
 
 type GoGoFrameworkNewOptions struct {
@@ -36,13 +36,13 @@ func NewGoGoFramework(options GoGoFrameworkNewOptions) *GoGoFramework {
 	return &GoGoFramework{
 		Registry:  reg,
 		Scheduler: scheduler.NewScheduler(reg),
-		options:   options,
+		Options:   options,
 	}
 }
 
 func (g *GoGoFramework) Init() {
-	ebiten.SetWindowSize(g.options.Window.Width, g.options.Window.Height)
-	ebiten.SetWindowTitle(g.options.GameName)
+	ebiten.SetWindowSize(g.Options.Window.Width, g.Options.Window.Height)
+	ebiten.SetWindowTitle(g.Options.GameName)
 }
 
 func (g *GoGoFramework) Update() error {
@@ -59,5 +59,5 @@ func (g *GoGoFramework) Draw(screen *ebiten.Image) {
 }
 
 func (g *GoGoFramework) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
-	return g.options.Window.Width, g.options.Window.Height
+	return g.Options.Window.Width, g.Options.Window.Height
 }

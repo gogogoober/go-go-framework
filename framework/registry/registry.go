@@ -3,7 +3,6 @@ package registry
 import (
 	"go-go-Framework/framework/entity"
 
-	"github.com/google/uuid"
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
@@ -28,7 +27,7 @@ func (r *Registry) AddPlayer(p entity.Component) {
 	r.Players = append(r.Players, p)
 }
 
-func (r *Registry) RemovePlayerById(id uuid.UUID) {
+func (r *Registry) RemovePlayerById(id string) {
 	for i := range r.Players {
 		if r.Players[i].GetId() == id {
 			r.Players = append(r.Players[:i], r.Players[i+1:]...)

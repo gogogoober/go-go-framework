@@ -16,7 +16,7 @@ import (
 
 type PlayerComponent struct {
 	Index             int
-	Id                uuid.UUID
+	Id                string
 	Count             int
 	IsDead            bool
 	IsPlayerControled bool
@@ -36,6 +36,7 @@ type PlayerComponent struct {
 
 type NewPlayerParams struct {
 	Index             int
+	Count             int
 	IsPlayerControled bool
 	lastKeyPressed    string
 	X                 int
@@ -51,8 +52,7 @@ func NewPlayerComponent(playerParams NewPlayerParams) *PlayerComponent {
 	if playerParams.lastKeyPressed == "" {
 		playerParams.lastKeyPressed = "a"
 	}
-
-	rect := utils.NewRect(float32(playerParams.Width-1), float32(playerParams.Height-1), color.RGBA{60, 160, 255, 255})
+	rect := utils.NewRect(float32(playerParams.Width), float32(playerParams.Height), color.RGBA{60, 160, 255, 255})
 	op := ebiten.DrawImageOptions{}
 	op.GeoM.Translate(float64(position.X), float64(position.Y))
 
@@ -63,17 +63,17 @@ func NewPlayerComponent(playerParams NewPlayerParams) *PlayerComponent {
 		op:                op,
 		width:             playerParams.Width,
 		height:            playerParams.Height,
-		moveDistance:      playerParams.Width,
+		moveDistance:      playerParams.Framework.Options.GridSize.Width,
 		Position:          position,
 		IsPlayerControled: playerParams.IsPlayerControled,
 		Framework:         playerParams.Framework,
-		Count:             4,
+		Count:             playerParams.Count,
 		IsDead:            false,
-		Id:                uuid.New(),
+		Id:                uuid.NewString(),
 	}
 }
 
-func (pc *PlayerComponent) GetId() uuid.UUID {
+func (pc *PlayerComponent) GetId() string {
 	return pc.Id
 }
 
@@ -135,6 +135,7 @@ func (pc *PlayerComponent) handleMovement(lastKeyPressed string) {
 	var dy = int(0)
 
 	var collidable = pc.players
+	var newCount = pc.Count
 
 	if inputservice.IsKeyStringPressed("d") || lastKeyPressed == "d" {
 		dx += pc.moveDistance
@@ -150,15 +151,24 @@ func (pc *PlayerComponent) handleMovement(lastKeyPressed string) {
 		dy += pc.moveDistance
 	}
 
-	if collisionservice.CheckCollision(positionservice.MovePosition(pc.Position, dx, dy), collidable) {
+	if len(collisionservice.CheckCollision(positionservice.MovePosition(pc.Position, dx, dy), pc.Id, collidable)) != 0 {
 		fmt.Println("Game Over x")
 		panic("gg")
+	}
+
+	var food = collisionservice.CheckCollision(positionservice.MovePosition(pc.Position, dx, dy), pc.Id, pc.npcs)
+	if len(food) != 0 {
+		for i := range food {
+			food[i].SetContact()
+		}
+		newCount++
 	}
 
 	var newPosition = positionservice.MovePosition(pc.Position, dx, dy)
 
 	var newBody = NewPlayerComponent(NewPlayerParams{
 		Index:             pc.Index + 1,
+		Count:             newCount,
 		IsPlayerControled: true,
 		X:                 newPosition.X,
 		Y:                 newPosition.Y,

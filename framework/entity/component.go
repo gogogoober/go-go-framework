@@ -3,12 +3,12 @@ package entity
 import (
 	"go-go-Framework/framework/services/positionservice"
 
-	"github.com/google/uuid"
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
 type Component interface {
-	GetId() uuid.UUID
+	GetId() string
+	SetContact()
 	SetSprite(sprite *ebiten.Image)
 	GetSprite() *ebiten.Image
 	GetOptions() *ebiten.DrawImageOptions

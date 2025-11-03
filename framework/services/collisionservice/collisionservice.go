@@ -1,19 +1,19 @@
 package collisionservice
 
 import (
-	"fmt"
 	"go-go-Framework/framework/entity"
 	"go-go-Framework/framework/services/positionservice"
 )
 
-func CheckCollision(pcPosition positionservice.Position, npcs []entity.Component) bool {
-	for _, n := range npcs {
+func CheckCollision(pcPosition positionservice.Position, id string, components []entity.Component) []entity.Component {
+	var collisions []entity.Component
+
+	for _, n := range components {
 		if AreComponentsColliding(pcPosition, *n.GetPosition()) {
-			fmt.Print(pcPosition, n)
-			return true
+			collisions = append(collisions, n)
 		}
 	}
-	return false
+	return collisions
 }
 
 func AreComponentsColliding(p1, p2 positionservice.Position) bool {
