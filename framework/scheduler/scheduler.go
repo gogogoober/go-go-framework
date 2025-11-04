@@ -55,21 +55,27 @@ func (s *Scheduler) GetNpcsComponents() []entity.Component {
 func (s *Scheduler) ScheduleUpdates(tick int) {
 
 	npcs := s.GetNpcsComponents()
-	players := s.GetPlayersComponents()
+	// players := s.GetPlayersComponents()
 
-	for _, c := range players {
-		c.SetNpcs(npcs)
-		c.SetPlayers(players)
+	for _, g := range s.registry.Components {
+		for _, c := range g {
+			c.Update(tick)
+		}
 	}
+
+	// for _, c := range players {
+	// 	c.SetNpcs(npcs)
+	// 	c.SetPlayers(players)
+	// }
 
 	for _, c := range npcs {
 		c.SetNpcs(npcs)
-		c.SetPlayers(players)
+		// c.SetPlayers(players)
 	}
 
-	for _, c := range players {
-		c.Update(tick)
-	}
+	// for _, c := range players {
+	// 	c.Update(tick)
+	// }
 
 	for _, c := range npcs {
 		c.Update(tick)
@@ -77,6 +83,13 @@ func (s *Scheduler) ScheduleUpdates(tick int) {
 }
 
 func (s *Scheduler) ScheduleDrawings(screen *ebiten.Image) {
+
+	for _, g := range s.registry.Components {
+		for _, c := range g {
+			screen.DrawImage(c.GetSprite(), c.GetOptions())
+
+		}
+	}
 
 	for _, comp := range s.GetComponentsToDraw() {
 		screen.DrawImage(comp.GetSprite(), comp.GetOptions())

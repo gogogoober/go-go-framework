@@ -17,3 +17,11 @@ type Component interface {
 	SetPlayers([]Component)
 	Update(tick int)
 }
+
+type Component2 interface {
+	GetId() string
+	GetSprite() *ebiten.Image
+	GetOptions() *ebiten.DrawImageOptions
+	GetPosition() *positionservice.Position
+	Update(tick int)
+}
