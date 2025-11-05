@@ -1,7 +1,6 @@
 package registry
 
 import (
-	"fmt"
 	"go-go-Framework/framework/entity"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -41,7 +40,6 @@ func (r *Registry) SetScene(s *ebiten.Image) {
 }
 
 func (r *Registry) AddComponent(c entity.Component2, group string) {
-	fmt.Println("AddComponent")
 	if _, ok := r.components[group]; !ok {
 		r.components[group] = make(map[string]entity.Component2)
 	}
