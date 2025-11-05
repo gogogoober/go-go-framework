@@ -45,9 +45,9 @@ func NewSnake(options NewSnakeOptions) *Snake {
 		options.lastKeyPressed = "w"
 	}
 
-	// if snakeBody, ok := options.Framework.Registry.Components["snake"]; ok {
-	// 	fmt.Println(len(snakeBody))
-	// 	count = len(snakeBody)
+	// if snakeBody, ok := options.Framework.Registry.GetComponentGroup("snake"); ok {
+	// 	fmt.Println("snakeBody len", len(snakeBody))
+	// 	count = len(snakeBody) + 1
 	// }
 
 	zeroPos := positionservice.Position{}
@@ -93,13 +93,13 @@ func (s *Snake) Update(tick int) {
 		fmt.Println("tick", tick)
 		fmt.Println("count", s.Count)
 		fmt.Println("id", s.Id)
-		s.Count = s.Count - 1
 
-		if s.Count == 0 {
-			s.Framework.Registry.RemoveComponentById(s.Id, "snake")
-		}
 		if s.IsPlayerControled {
 			s.handleMovement(s.lastKeyPressed)
+		}
+		s.Count = s.Count - 1
+		if s.Count == 0 {
+			s.Framework.Registry.RemoveComponentById(s.Id, "snake")
 		}
 
 	}
@@ -126,7 +126,7 @@ func (pc *Snake) handleMovement(lastKeyPressed string) {
 	var dx = int(0)
 	var dy = int(0)
 
-	var snakeBody = pc.Framework.Registry.GetGroupArray("snake")
+	var snakeBody = pc.Framework.Registry.GetComponentGroupArray("snake")
 	fmt.Println(snakeBody)
 	// var apple = pc.Framework.Registry.GetGroupArray("apple")
 	// var newCount = pc.Count
@@ -173,5 +173,8 @@ func (pc *Snake) handleMovement(lastKeyPressed string) {
 		Position:       newPosition,
 	})
 	fmt.Println("snake AddComponent")
+	if snakeBody, ok := pc.Framework.Registry.GetComponentGroup("snake"); ok {
+		fmt.Println("snakeBody len", len(snakeBody))
+	}
 	pc.Framework.Registry.AddComponent(newBody, "snake")
 }

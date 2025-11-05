@@ -50,6 +50,7 @@ func (g *GoGoFramework) Update() error {
 	if g.tickCount%60 == 0 {
 		g.tickCount = 0
 	}
+	g.Registry.UpdateSnapshot()
 	g.Scheduler.ScheduleUpdates(g.tickCount)
 	return nil
 }

@@ -1,6 +1,7 @@
 package scheduler
 
 import (
+	"fmt"
 	"go-go-Framework/framework/entity"
 	"go-go-Framework/framework/registry"
 
@@ -53,11 +54,13 @@ func (s *Scheduler) GetNpcsComponents() []entity.Component {
 }
 
 func (s *Scheduler) ScheduleUpdates(tick int) {
-
-	npcs := s.GetNpcsComponents()
+	if tick%60 == 0 {
+		fmt.Println("Global Tick")
+	}
+	// npcs := s.GetNpcsComponents()
 	// players := s.GetPlayersComponents()
 
-	for _, g := range s.registry.Components {
+	for _, g := range s.registry.GetComponents() {
 		for _, c := range g {
 			c.Update(tick)
 		}
@@ -68,23 +71,23 @@ func (s *Scheduler) ScheduleUpdates(tick int) {
 	// 	c.SetPlayers(players)
 	// }
 
-	for _, c := range npcs {
-		c.SetNpcs(npcs)
-		// c.SetPlayers(players)
-	}
+	// for _, c := range npcs {
+	// 	c.SetNpcs(npcs)
+	// 	// c.SetPlayers(players)
+	// }
 
 	// for _, c := range players {
 	// 	c.Update(tick)
 	// }
 
-	for _, c := range npcs {
-		c.Update(tick)
-	}
+	// for _, c := range npcs {
+	// 	c.Update(tick)
+	// }
 }
 
 func (s *Scheduler) ScheduleDrawings(screen *ebiten.Image) {
 
-	for _, g := range s.registry.Components {
+	for _, g := range s.registry.GetComponents() {
 		for _, c := range g {
 			screen.DrawImage(c.GetSprite(), c.GetOptions())
 

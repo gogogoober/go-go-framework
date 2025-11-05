@@ -8,18 +8,32 @@ import (
 )
 
 type Registry struct {
-	Scene      *ebiten.Image
-	Players    []entity.Component //Component stores an abstract type, only use pointers for concrete types
-	Npcs       []entity.Component
-	Components map[string]map[string]entity.Component2
+	Scene              *ebiten.Image
+	Players            []entity.Component
+	Npcs               []entity.Component
+	components         map[string]map[string]entity.Component2
+	ComponentsSnapshot map[string]map[string]entity.Component2
 }
 
 func NewRegistry() *Registry {
 	return &Registry{
-		Players:    make([]entity.Component, 0),
-		Npcs:       make([]entity.Component, 0),
-		Components: make(map[string]map[string]entity.Component2),
+		Players:            make([]entity.Component, 0),
+		Npcs:               make([]entity.Component, 0),
+		components:         make(map[string]map[string]entity.Component2),
+		ComponentsSnapshot: make(map[string]map[string]entity.Component2),
 	}
+}
+
+func (r *Registry) UpdateSnapshot() {
+	snap := make(map[string]map[string]entity.Component2, len(r.components))
+	for group, comps := range r.components {
+		groupCopy := make(map[string]entity.Component2, len(comps))
+		for id, comp := range comps {
+			groupCopy[id] = comp
+		}
+		snap[group] = groupCopy
+	}
+	r.ComponentsSnapshot = snap
 }
 
 func (r *Registry) SetScene(s *ebiten.Image) {
@@ -28,21 +42,32 @@ func (r *Registry) SetScene(s *ebiten.Image) {
 
 func (r *Registry) AddComponent(c entity.Component2, group string) {
 	fmt.Println("AddComponent")
-	if _, ok := r.Components[group]; !ok {
-		r.Components[group] = make(map[string]entity.Component2)
+	if _, ok := r.components[group]; !ok {
+		r.components[group] = make(map[string]entity.Component2)
 	}
-	r.Components[group][c.GetId()] = c
+	r.components[group][c.GetId()] = c
 }
 
 func (r *Registry) RemoveComponentById(id string, group string) {
-	if groupMap, ok := r.Components[group]; ok {
+	if groupMap, ok := r.components[group]; ok {
 		delete(groupMap, id)
 	}
 }
 
-func (r *Registry) GetGroupArray(group string) []entity.Component2 {
+func (r *Registry) GetComponents() map[string]map[string]entity.Component2 {
+	return r.ComponentsSnapshot
+}
+
+func (r *Registry) GetComponentGroup(group string) (map[string]entity.Component2, bool) {
+	if g, ok := r.ComponentsSnapshot[group]; ok {
+		return g, true
+	}
+	return make(map[string]entity.Component2), false
+}
+
+func (r *Registry) GetComponentGroupArray(group string) []entity.Component2 {
 	var collection []entity.Component2
-	if g, ok := r.Components[group]; ok {
+	if g, ok := r.ComponentsSnapshot[group]; ok {
 		for _, c := range g {
 			collection = append(collection, c)
 		}
