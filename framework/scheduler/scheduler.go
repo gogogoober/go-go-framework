@@ -33,7 +33,11 @@ func (s *Scheduler) ScheduleUpdates(tick int) {
 func (s *Scheduler) ScheduleDrawings(screen *ebiten.Image) {
 	for _, g := range s.registry.GetComponents() {
 		for _, c := range g {
-			screen.DrawImage(c.GetSprite(), c.GetOptions())
+			sprite := c.GetSprite(screen)
+			if sprite == nil {
+				continue
+			}
+			screen.DrawImage(sprite, c.GetOptions())
 		}
 	}
 }

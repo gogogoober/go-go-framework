@@ -8,7 +8,7 @@ import (
 
 type Component interface {
 	GetId() string
-	GetSprite() *ebiten.Image
+	GetSprite(screen *ebiten.Image) *ebiten.Image
 	GetOptions() *ebiten.DrawImageOptions
 	GetPosition() *positionservice.Position
 	Update(tick int)

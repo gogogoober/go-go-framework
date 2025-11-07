@@ -3,6 +3,7 @@ package framework
 import (
 	"go-go-Framework/framework/registry"
 	"go-go-Framework/framework/scheduler"
+	"go-go-Framework/framework/services/timeservice"
 	"go-go-Framework/framework/window"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -13,6 +14,11 @@ type GoGoFramework struct {
 	Registry  *registry.Registry
 	Scheduler *scheduler.Scheduler
 	Options   GoGoFrameworkNewOptions
+	Services  *GoGoServices
+}
+
+type GoGoServices struct {
+	*timeservice.TimeService
 }
 
 type GoGoFrameworkNewOptions struct {
@@ -33,10 +39,15 @@ func NewGoGoFramework(options GoGoFrameworkNewOptions) *GoGoFramework {
 		options.GridSize = &window.GoGoWindow{Width: 1, Height: 1}
 	}
 
+	var GoGoServices = &GoGoServices{
+		timeservice.NewTimeSerice(),
+	}
+
 	return &GoGoFramework{
 		Registry:  reg,
 		Scheduler: scheduler.NewScheduler(reg),
 		Options:   options,
+		Services:  GoGoServices,
 	}
 }
 
@@ -47,6 +58,7 @@ func (g *GoGoFramework) Init() {
 
 func (g *GoGoFramework) Update() error {
 	g.tickCount++
+	g.Services.TimeService.TotalTicks = g.tickCount
 	if g.tickCount%60 == 0 {
 		g.tickCount = 0
 	}

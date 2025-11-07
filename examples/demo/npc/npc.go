@@ -61,7 +61,7 @@ func (np *NpcComponent) GetId() string {
 	return np.Id
 }
 
-func (np *NpcComponent) GetSprite() *ebiten.Image {
+func (np *NpcComponent) GetSprite(screen *ebiten.Image) *ebiten.Image {
 	return np.sprite
 }
 func (np *NpcComponent) GetOptions() *ebiten.DrawImageOptions {

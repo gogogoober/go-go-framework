@@ -70,7 +70,7 @@ func NewSnake(options NewSnakeOptions) *Snake {
 func (s *Snake) GetId() string {
 	return s.Id
 }
-func (s *Snake) GetSprite() *ebiten.Image {
+func (s *Snake) GetSprite(screen *ebiten.Image) *ebiten.Image {
 	return s.Sprite
 }
 func (s *Snake) GetOptions() *ebiten.DrawImageOptions {

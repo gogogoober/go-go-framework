@@ -1,6 +1,7 @@
 package demo
 
 import (
+	"go-go-Framework/examples/demo/hud"
 	"go-go-Framework/examples/demo/npc"
 	"go-go-Framework/examples/demo/snake"
 	"go-go-Framework/framework"
@@ -47,12 +48,12 @@ func RunDemo() {
 		framework: framework,
 	}
 
+	hud1 := hud.NewHud()
 	snake1 := snake.NewSnake(snake.NewSnakeOptions{Height: width / grid, Framework: framework})
-
 	apple := npc.NewNpcComponent(npc.NewNPCOptions{Width: width / grid, Height: height / grid, Framework: framework})
 
+	demo.framework.Registry.AddComponent(hud1, "hud")
 	demo.framework.Registry.AddComponent(snake1, "snake")
-
 	demo.framework.Registry.AddComponent(apple, "apple")
 
 	demo.framework.Init()
