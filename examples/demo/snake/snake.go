@@ -42,9 +42,6 @@ func NewSnake(options NewSnakeOptions) *Snake {
 	var pp = positionservice.GetPositions(*options.Framework.Options.Window, *options.Framework.Options.GridSize)
 	var newPos = positionservice.GetNewPosition(pp, make([]positionservice.GridPosisitionI, 0))
 
-	// var count = options.Framework.Registry.GetComponentGroupArray("snake")
-	// fmt.Println(len(count), count)
-
 	zeroPos := positionservice.Position{}
 
 	if options.Position == zeroPos {
@@ -149,19 +146,6 @@ func (s *Snake) handleMovement(keyPressed string) {
 	}
 
 	if len(collisionservice.CheckCollision(newPosition, apple)) != 0 {
-		// Increase the size of the snake by growing the tail
-		// var snakes = s.Framework.Registry.GetComponentGroupArray("snake")
-		// var lastSnake = snakes[len(snakes)-1]
-		// fmt.Println(snakes, lastSnake)
-
-		// var newBody = NewSnake(NewSnakeOptions{
-		// 	Height:               s.Sprite.Bounds().Size().X,
-		// 	Framework:            s.Framework,
-		// 	previouseKeyPresssed: keyPressed,
-		// 	Position:             *lastSnake.GetPosition(),
-		// })
-		// s.Framework.Registry.AddComponent(newBody, "snake")
-
 		s.Count++
 	}
 
