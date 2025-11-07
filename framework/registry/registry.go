@@ -36,15 +36,21 @@ func (r *Registry) UpdateSnapshot() {
 }
 
 func (r *Registry) UpdateComponents() {
-	snap := make(map[string]map[string]entity.Component, len(r.ComponentsSnapshot))
-	for group, comps := range r.ComponentsSnapshot {
-		groupCopy := make(map[string]entity.Component, len(comps))
-		for id, comp := range comps {
-			groupCopy[id] = comp
-		}
-		snap[group] = groupCopy
-	}
-	r.components = snap
+	// for groupKey, group := range r.components {
+	// 	for compKey, _ := range group {
+	// 		group[compKey] = r.ComponentsSnapshot[groupKey][compKey]
+	// 	}
+	// }
+
+	// snap := make(map[string]map[string]entity.Component, len(r.ComponentsSnapshot))
+	// for group, comps := range r.ComponentsSnapshot {
+	// 	groupCopy := make(map[string]entity.Component, len(comps))
+	// 	for id, comp := range comps {
+	// 		groupCopy[id] = comp
+	// 	}
+	// 	snap[group] = groupCopy
+	// }
+	// r.components = snap
 }
 
 func (r *Registry) SetScene(s *ebiten.Image) {
@@ -62,6 +68,10 @@ func (r *Registry) RemoveComponentById(id string, group string) {
 	if groupMap, ok := r.components[group]; ok {
 		delete(groupMap, id)
 	}
+}
+
+func (r *Registry) RemoveGroupById(group string) {
+	delete(r.components, group)
 }
 
 func (r *Registry) GetComponents() map[string]map[string]entity.Component {

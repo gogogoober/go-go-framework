@@ -71,19 +71,17 @@ func (np *NpcComponent) GetPosition() *positionservice.Position {
 	return &np.Position
 }
 func (np *NpcComponent) Update(tick int) {
-	if tick%60 == 0 {
-		var snake = np.Framework.Registry.GetComponentGroupArray("snake")
-		var collisionSnake = collisionservice.CheckCollision(np.Position, snake)
-		if len(collisionSnake) > 0 {
-			var newPos = getNewPosition(np.possiblePossitions, snake)
-			position := positionservice.GetRectanglePosition(newPos.x, newPos.y, np.sprite.Bounds().Size().X, np.sprite.Bounds().Size().Y)
+	var snake = np.Framework.Registry.GetComponentGroupArray("snake")
+	var collisionSnake = collisionservice.CheckCollision(np.Position, snake)
+	if len(collisionSnake) > 0 {
+		var newPos = getNewPosition(np.possiblePossitions, snake)
+		position := positionservice.GetRectanglePosition(newPos.x, newPos.y, np.sprite.Bounds().Size().X, np.sprite.Bounds().Size().Y)
 
-			np.Position = position
-			np.op.GeoM.Reset() // important
-			np.op.GeoM.Translate(float64(position.X), float64(position.Y))
-		}
-
+		np.Position = position
+		np.op.GeoM.Reset() // important
+		np.op.GeoM.Translate(float64(position.X), float64(position.Y))
 	}
+
 }
 
 func getPositions(Framework *framework.GoGoFramework) []GridPosisition {

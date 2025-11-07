@@ -1,6 +1,7 @@
 package snake
 
 import (
+	"fmt"
 	"go-go-Framework/framework"
 	"go-go-Framework/framework/entity"
 	"go-go-Framework/framework/services/collisionservice"
@@ -26,19 +27,23 @@ type Snake struct {
 	previouseKeyPresssed string
 	moveDistance         int
 	Count                int
+	Height               int
 }
 
 type NewSnakeOptions struct {
 	Height               int
 	Framework            *framework.GoGoFramework
 	previouseKeyPresssed string
-	count                int
+	Count                int
 	positionservice.Position
 }
 
 func NewSnake(options NewSnakeOptions) *Snake {
 	var pp = positionservice.GetPositions(*options.Framework.Options.Window, *options.Framework.Options.GridSize)
 	var newPos = positionservice.GetNewPosition(pp, make([]positionservice.GridPosisitionI, 0))
+
+	// var count = options.Framework.Registry.GetComponentGroupArray("snake")
+	// fmt.Println(len(count), count)
 
 	zeroPos := positionservice.Position{}
 
@@ -60,7 +65,8 @@ func NewSnake(options NewSnakeOptions) *Snake {
 		IsPlayerControled:    true,
 		previouseKeyPresssed: options.previouseKeyPresssed,
 		moveDistance:         options.Height,
-		Count:                options.count,
+		Count:                options.Count,
+		Height:               options.Height,
 	}
 }
 
@@ -77,15 +83,15 @@ func (s *Snake) GetPosition() *positionservice.Position {
 	return &s.Position
 }
 func (s *Snake) Update(tick int) {
-	var keyPressed = getKeyPressed(s.previouseKeyPresssed)
+	s.previouseKeyPresssed = getKeyPressed(s.previouseKeyPresssed)
 
-	if keyPressed == "" {
+	if s.previouseKeyPresssed == "" {
 		return
 	}
 
-	if tick%10 == 0 {
+	if tick%8 == 0 {
 		if s.IsPlayerControled {
-			s.handleMovement(keyPressed)
+			s.handleMovement(s.previouseKeyPresssed)
 		}
 		if s.Count == 0 {
 			s.Framework.Registry.RemoveComponentById(s.Id, "snake")
@@ -133,16 +139,29 @@ func (s *Snake) handleMovement(keyPressed string) {
 	}
 
 	var newPosition = positionservice.MovePosition(s.Position, dx, dy)
+	var isCollidingWithSelf = len(collisionservice.CheckCollision(newPosition, snakeBody)) != 0
+	var isOutOfBounds = newPosition.X < 0 || newPosition.Y < 0 || newPosition.X2 > s.Framework.Options.Window.Height || newPosition.Y2 > s.Framework.Options.Window.Width
 
-	if len(collisionservice.CheckCollision(newPosition, s.Id, snakeBody)) != 0 {
-		panic("Game Over x")
+	if isOutOfBounds || isCollidingWithSelf {
+		fmt.Println("Game Over x")
+		reset(s.Framework, s.Height)
+		return
 	}
 
-	if newPosition.X < 0 || newPosition.Y < 0 || newPosition.X2 > s.Framework.Options.Window.Height || newPosition.Y2 > s.Framework.Options.Window.Width {
-		panic("Game Over x")
-	}
+	if len(collisionservice.CheckCollision(newPosition, apple)) != 0 {
+		// Increase the size of the snake by growing the tail
+		// var snakes = s.Framework.Registry.GetComponentGroupArray("snake")
+		// var lastSnake = snakes[len(snakes)-1]
+		// fmt.Println(snakes, lastSnake)
 
-	if len(collisionservice.CheckCollision(newPosition, s.Id, apple)) != 0 {
+		// var newBody = NewSnake(NewSnakeOptions{
+		// 	Height:               s.Sprite.Bounds().Size().X,
+		// 	Framework:            s.Framework,
+		// 	previouseKeyPresssed: keyPressed,
+		// 	Position:             *lastSnake.GetPosition(),
+		// })
+		// s.Framework.Registry.AddComponent(newBody, "snake")
+
 		s.Count++
 	}
 
@@ -153,7 +172,18 @@ func (s *Snake) handleMovement(keyPressed string) {
 		Framework:            s.Framework,
 		previouseKeyPresssed: keyPressed,
 		Position:             newPosition,
-		count:                s.Count,
+		Count:                s.Count,
 	})
 	s.Framework.Registry.AddComponent(newBody, "snake")
+
+}
+
+func reset(framework *framework.GoGoFramework, height int) {
+	framework.Registry.RemoveGroupById("snake")
+
+	var newBody = NewSnake(NewSnakeOptions{
+		Height:    height,
+		Framework: framework,
+	})
+	framework.Registry.AddComponent(newBody, "snake")
 }
