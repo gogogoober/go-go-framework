@@ -52,6 +52,7 @@ func (g *GoGoFramework) Update() error {
 	}
 	g.Registry.UpdateSnapshot()
 	g.Scheduler.ScheduleUpdates(g.tickCount)
+
 	return nil
 }
 

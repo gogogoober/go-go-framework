@@ -5,7 +5,7 @@ import (
 	"go-go-Framework/framework/services/positionservice"
 )
 
-func CheckCollision(pcPosition positionservice.Position, id string, components []entity.Component) []entity.Component {
+func CheckCollision(pcPosition positionservice.Position, components []entity.Component) []entity.Component {
 	var collisions []entity.Component
 
 	for _, n := range components {

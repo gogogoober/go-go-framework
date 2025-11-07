@@ -3,6 +3,7 @@ package npc
 import (
 	"go-go-Framework/framework"
 	"go-go-Framework/framework/entity"
+	"go-go-Framework/framework/services/collisionservice"
 	"go-go-Framework/framework/services/positionservice"
 	"go-go-Framework/framework/utils"
 	"image/color"
@@ -56,14 +57,6 @@ func NewNpcComponent(options NewNPCOptions) *NpcComponent {
 	}
 }
 
-func (np *NpcComponent) SetContact() {
-	np.contact = true
-}
-
-func (np *NpcComponent) SetSprite(sprite *ebiten.Image) {
-
-}
-
 func (np *NpcComponent) GetId() string {
 	return np.Id
 }
@@ -77,21 +70,19 @@ func (np *NpcComponent) GetOptions() *ebiten.DrawImageOptions {
 func (np *NpcComponent) GetPosition() *positionservice.Position {
 	return &np.Position
 }
-func (np *NpcComponent) SetNpcs(npc []entity.Component) {
-	np.npcs = npc
-}
-func (np *NpcComponent) SetPlayers(players []entity.Component) {
-	np.players = players
-}
 func (np *NpcComponent) Update(tick int) {
-	if tick%60 == 0 && np.contact {
-		var newPos = getNewPosition(np.possiblePossitions, np.players)
-		position := positionservice.GetRectanglePosition(newPos.x, newPos.y, np.sprite.Bounds().Size().X, np.sprite.Bounds().Size().Y)
+	if tick%60 == 0 {
+		var snake = np.Framework.Registry.GetComponentGroupArray("snake")
+		var collisionSnake = collisionservice.CheckCollision(np.Position, snake)
+		if len(collisionSnake) > 0 {
+			var newPos = getNewPosition(np.possiblePossitions, snake)
+			position := positionservice.GetRectanglePosition(newPos.x, newPos.y, np.sprite.Bounds().Size().X, np.sprite.Bounds().Size().Y)
 
-		np.Position = position
-		np.op.GeoM.Reset() // important
-		np.op.GeoM.Translate(float64(position.X), float64(position.Y))
-		np.contact = false
+			np.Position = position
+			np.op.GeoM.Reset() // important
+			np.op.GeoM.Translate(float64(position.X), float64(position.Y))
+		}
+
 	}
 }
 
