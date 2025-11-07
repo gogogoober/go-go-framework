@@ -34,7 +34,7 @@ func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeigh
 func RunDemo() {
 	var width = 500
 	var height = 500
-	var grid = 10
+	var grid = 20
 
 	var gameOptions = framework.GoGoFrameworkNewOptions{
 		Window:   &window.GoGoWindow{Width: width, Height: height},

@@ -22,27 +22,23 @@ type Snake struct {
 	entity.Component
 	Framework *framework.GoGoFramework
 
-	IsPlayerControled bool
-	lastKeyPressed    string
-	moveDistance      int
-	Count             int
+	IsPlayerControled    bool
+	previouseKeyPresssed string
+	moveDistance         int
+	Count                int
 }
 
 type NewSnakeOptions struct {
-	Height         int
-	Framework      *framework.GoGoFramework
-	lastKeyPressed string
-	count          int
+	Height               int
+	Framework            *framework.GoGoFramework
+	previouseKeyPresssed string
+	count                int
 	positionservice.Position
 }
 
 func NewSnake(options NewSnakeOptions) *Snake {
 	var pp = positionservice.GetPositions(*options.Framework.Options.Window, *options.Framework.Options.GridSize)
 	var newPos = positionservice.GetNewPosition(pp, make([]positionservice.GridPosisitionI, 0))
-
-	if options.lastKeyPressed == "" {
-		options.lastKeyPressed = "w"
-	}
 
 	zeroPos := positionservice.Position{}
 
@@ -56,15 +52,15 @@ func NewSnake(options NewSnakeOptions) *Snake {
 	op.GeoM.Translate(float64(options.Position.X), float64(options.Position.Y))
 
 	return &Snake{
-		Id:                uuid.NewString(),
-		Sprite:            rect,
-		Op:                &op,
-		Position:          options.Position,
-		Framework:         options.Framework,
-		IsPlayerControled: true,
-		lastKeyPressed:    options.lastKeyPressed,
-		moveDistance:      options.Height,
-		Count:             options.count,
+		Id:                   uuid.NewString(),
+		Sprite:               rect,
+		Op:                   &op,
+		Position:             options.Position,
+		Framework:            options.Framework,
+		IsPlayerControled:    true,
+		previouseKeyPresssed: options.previouseKeyPresssed,
+		moveDistance:         options.Height,
+		Count:                options.count,
 	}
 }
 
@@ -81,11 +77,15 @@ func (s *Snake) GetPosition() *positionservice.Position {
 	return &s.Position
 }
 func (s *Snake) Update(tick int) {
-	s.lastKeyPressed = lastKeyPressed(s.lastKeyPressed)
+	var keyPressed = getKeyPressed(s.previouseKeyPresssed)
+
+	if keyPressed == "" {
+		return
+	}
 
 	if tick%10 == 0 {
 		if s.IsPlayerControled {
-			s.handleMovement(s.lastKeyPressed)
+			s.handleMovement(keyPressed)
 		}
 		if s.Count == 0 {
 			s.Framework.Registry.RemoveComponentById(s.Id, "snake")
@@ -94,62 +94,62 @@ func (s *Snake) Update(tick int) {
 	}
 }
 
-func lastKeyPressed(lastKey string) string {
-	if inputservice.IsKeyStringPressed("d") {
+func getKeyPressed(previouseKeyPresssed string) string {
+	if inputservice.IsKeyStringPressed("d") && previouseKeyPresssed != "a" {
 		return "d"
 	}
-	if inputservice.IsKeyStringPressed("a") {
+	if inputservice.IsKeyStringPressed("a") && previouseKeyPresssed != "d" {
 		return "a"
 	}
-	if inputservice.IsKeyStringPressed("w") {
+	if inputservice.IsKeyStringPressed("w") && previouseKeyPresssed != "s" {
 		return "w"
 	}
-	if inputservice.IsKeyStringPressed("s") {
+	if inputservice.IsKeyStringPressed("s") && previouseKeyPresssed != "w" {
 		return "s"
 	}
 
-	return lastKey
+	return previouseKeyPresssed
 }
 
-func (pc *Snake) handleMovement(lastKeyPressed string) {
+func (pc *Snake) handleMovement(keyPressed string) {
 	var dx = int(0)
 	var dy = int(0)
 
 	var snakeBody = pc.Framework.Registry.GetComponentGroupArray("snake")
 	var apple = pc.Framework.Registry.GetComponentGroupArray("apple")
 
-	if inputservice.IsKeyStringPressed("d") || lastKeyPressed == "d" {
+	if keyPressed == "d" {
 		dx += pc.moveDistance
 	}
-	if inputservice.IsKeyStringPressed("a") || lastKeyPressed == "a" {
+	if keyPressed == "a" {
 		dx -= pc.moveDistance
 	}
 
-	if inputservice.IsKeyStringPressed("w") || lastKeyPressed == "w" {
+	if keyPressed == "w" {
 		dy -= pc.moveDistance
 	}
-	if inputservice.IsKeyStringPressed("s") || lastKeyPressed == "s" {
+	if keyPressed == "s" {
 		dy += pc.moveDistance
-	}
-
-	if len(collisionservice.CheckCollision(positionservice.MovePosition(pc.Position, dx, dy), pc.Id, snakeBody)) != 0 {
-		panic("Game Over x")
-	}
-
-	if len(collisionservice.CheckCollision(positionservice.MovePosition(pc.Position, dx, dy), pc.Id, apple)) != 0 {
-		pc.Count++
 	}
 
 	var newPosition = positionservice.MovePosition(pc.Position, dx, dy)
 
+	if len(collisionservice.CheckCollision(newPosition, pc.Id, snakeBody)) != 0 {
+		panic("Game Over x")
+	}
+
+	if len(collisionservice.CheckCollision(newPosition, pc.Id, apple)) != 0 {
+		pc.Count++
+	}
+
 	pc.IsPlayerControled = false
 
 	var newBody = NewSnake(NewSnakeOptions{
-		Height:         pc.Sprite.Bounds().Size().X,
-		Framework:      pc.Framework,
-		lastKeyPressed: pc.lastKeyPressed,
-		Position:       newPosition,
-		count:          pc.Count,
+		Height:               pc.Sprite.Bounds().Size().X,
+		Framework:            pc.Framework,
+		previouseKeyPresssed: keyPressed,
+		Position:             newPosition,
+		count:                pc.Count,
 	})
 	pc.Framework.Registry.AddComponent(newBody, "snake")
 }
