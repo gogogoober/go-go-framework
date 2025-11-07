@@ -1,7 +1,6 @@
 package demo
 
 import (
-	"fmt"
 	"go-go-Framework/examples/demo/npc"
 	"go-go-Framework/examples/demo/snake"
 	"go-go-Framework/framework"
@@ -51,16 +50,9 @@ func RunDemo() {
 	}
 
 	snake := snake.NewSnake(snake.NewSnakeOptions{Height: width / grid, Framework: framework})
-	fmt.Println(snake)
-	demo.framework.Registry.AddComponent(snake, "snake")
-
-	// var pp = getPositions(framework)
-	// var newPos = getNewPosition(pp, make([]entity.Component, 0))
-
-	// player := player.NewPlayerComponent(player.NewPlayerParams{IsPlayerControled: true, X: newPos.x, Y: newPos.y, Width: width / grid, Height: height / grid, Framework: framework})
 	apple := npc.NewNpcComponent(npc.NewNPCOptions{Width: width / grid, Height: height / grid, Framework: framework})
 
-	// demo.framework.Registry.AddPlayer(player)
+	demo.framework.Registry.AddComponent(snake, "snake")
 	demo.framework.Registry.AddNpc(apple)
 
 	demo.framework.Init()

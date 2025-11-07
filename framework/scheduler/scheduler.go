@@ -55,34 +55,15 @@ func (s *Scheduler) GetNpcsComponents() []entity.Component {
 
 func (s *Scheduler) ScheduleUpdates(tick int) {
 	if tick%60 == 0 {
+		fmt.Println("---------")
 		fmt.Println("Global Tick")
 	}
-	// npcs := s.GetNpcsComponents()
-	// players := s.GetPlayersComponents()
 
 	for _, g := range s.registry.GetComponents() {
 		for _, c := range g {
 			c.Update(tick)
 		}
 	}
-
-	// for _, c := range players {
-	// 	c.SetNpcs(npcs)
-	// 	c.SetPlayers(players)
-	// }
-
-	// for _, c := range npcs {
-	// 	c.SetNpcs(npcs)
-	// 	// c.SetPlayers(players)
-	// }
-
-	// for _, c := range players {
-	// 	c.Update(tick)
-	// }
-
-	// for _, c := range npcs {
-	// 	c.Update(tick)
-	// }
 }
 
 func (s *Scheduler) ScheduleDrawings(screen *ebiten.Image) {

@@ -35,6 +35,18 @@ func (r *Registry) UpdateSnapshot() {
 	r.ComponentsSnapshot = snap
 }
 
+func (r *Registry) UpdateComponents() {
+	snap := make(map[string]map[string]entity.Component2, len(r.ComponentsSnapshot))
+	for group, comps := range r.ComponentsSnapshot {
+		groupCopy := make(map[string]entity.Component2, len(comps))
+		for id, comp := range comps {
+			groupCopy[id] = comp
+		}
+		snap[group] = groupCopy
+	}
+	r.components = snap
+}
+
 func (r *Registry) SetScene(s *ebiten.Image) {
 	r.Scene = s
 }
