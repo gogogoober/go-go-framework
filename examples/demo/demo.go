@@ -4,10 +4,8 @@ import (
 	"go-go-Framework/examples/demo/npc"
 	"go-go-Framework/examples/demo/snake"
 	"go-go-Framework/framework"
-	"go-go-Framework/framework/entity"
 	"go-go-Framework/framework/window"
 	"log"
-	"math/rand"
 
 	"github.com/hajimehoshi/ebiten/v2"
 )
@@ -49,11 +47,13 @@ func RunDemo() {
 		framework: framework,
 	}
 
-	snake := snake.NewSnake(snake.NewSnakeOptions{Height: width / grid, Framework: framework})
+	snake1 := snake.NewSnake(snake.NewSnakeOptions{Height: width / grid, Framework: framework})
+
 	apple := npc.NewNpcComponent(npc.NewNPCOptions{Width: width / grid, Height: height / grid, Framework: framework})
 
-	demo.framework.Registry.AddComponent(snake, "snake")
-	demo.framework.Registry.AddNpc(apple)
+	demo.framework.Registry.AddComponent(snake1, "snake")
+
+	demo.framework.Registry.AddComponent(apple, "apple")
 
 	demo.framework.Init()
 
@@ -62,52 +62,4 @@ func RunDemo() {
 		log.Fatal(err)
 		panic(err)
 	}
-}
-
-func getPositions(Framework *framework.GoGoFramework) []GridPosisition {
-	gh := Framework.Options.Window.Height
-	gw := Framework.Options.Window.Width
-	ggh := Framework.Options.GridSize.Height
-	ggw := Framework.Options.GridSize.Width
-
-	var hg = (gh / ggh)
-	// var wg = (gw / ggw)
-
-	var positions = make([]GridPosisition, hg)
-	var count = 0
-
-	for i := 0; i < gh; i = i + ggh {
-		positions[count].y = i
-		count++
-	}
-	count = 0
-	for i := 0; i < gw; i = i + ggw {
-		positions[count].x = i
-		count++
-
-	}
-	return positions
-}
-
-func getNewPosition(pp []GridPosisition, players []entity.Component) GridPosisition {
-	var newPosition []GridPosisition
-
-	if len(players) == 0 {
-		newPosition = pp
-	} else {
-		for i := range players {
-			for j := range pp {
-				var pPos = players[i].GetPosition()
-				if pp[j].x != pPos.X && pp[j].y != pPos.Y {
-					newPosition = append(newPosition, pp[j])
-
-				}
-			}
-		}
-
-	}
-
-	var posPick = rand.Intn(len(newPosition))
-	var _np = newPosition[posPick]
-	return _np
 }

@@ -16,17 +16,6 @@ func CheckCollision(pcPosition positionservice.Position, id string, components [
 	return collisions
 }
 
-func CheckCollision2(pcPosition positionservice.Position, id string, components []entity.Component2) []entity.Component2 {
-	var collisions []entity.Component2
-
-	for _, n := range components {
-		if AreComponentsColliding(pcPosition, *n.GetPosition()) {
-			collisions = append(collisions, n)
-		}
-	}
-	return collisions
-}
-
 func AreComponentsColliding(p1, p2 positionservice.Position) bool {
 	left1, right1 := p1.X, p1.X2
 	top1, bottom1 := p1.Y, p1.Y2

@@ -1,7 +1,6 @@
 package snake
 
 import (
-	"fmt"
 	"go-go-Framework/framework"
 	"go-go-Framework/framework/entity"
 	"go-go-Framework/framework/services/collisionservice"
@@ -20,7 +19,7 @@ type Snake struct {
 	Sprite *ebiten.Image
 	Op     *ebiten.DrawImageOptions
 	positionservice.Position
-	entity.Component2
+	entity.Component
 	Framework *framework.GoGoFramework
 
 	IsPlayerControled bool
@@ -84,7 +83,7 @@ func (s *Snake) GetPosition() *positionservice.Position {
 func (s *Snake) Update(tick int) {
 	s.lastKeyPressed = lastKeyPressed(s.lastKeyPressed)
 
-	if tick%60 == 0 {
+	if tick%10 == 0 {
 		if s.IsPlayerControled {
 			s.handleMovement(s.lastKeyPressed)
 		}
@@ -118,7 +117,7 @@ func (pc *Snake) handleMovement(lastKeyPressed string) {
 	var dy = int(0)
 
 	var snakeBody = pc.Framework.Registry.GetComponentGroupArray("snake")
-	var apple = pc.Framework.Registry.Npcs
+	var apple = pc.Framework.Registry.GetComponentGroupArray("apple")
 
 	if inputservice.IsKeyStringPressed("d") || lastKeyPressed == "d" {
 		dx += pc.moveDistance
@@ -134,13 +133,11 @@ func (pc *Snake) handleMovement(lastKeyPressed string) {
 		dy += pc.moveDistance
 	}
 
-	if len(collisionservice.CheckCollision2(positionservice.MovePosition(pc.Position, dx, dy), pc.Id, snakeBody)) != 0 {
-		fmt.Println("Game Over x")
-		panic("gg")
+	if len(collisionservice.CheckCollision(positionservice.MovePosition(pc.Position, dx, dy), pc.Id, snakeBody)) != 0 {
+		panic("Game Over x")
 	}
 
-	var food = collisionservice.CheckCollision(positionservice.MovePosition(pc.Position, dx, dy), pc.Id, apple)
-	if len(food) != 0 {
+	if len(collisionservice.CheckCollision(positionservice.MovePosition(pc.Position, dx, dy), pc.Id, apple)) != 0 {
 		pc.Count++
 	}
 
