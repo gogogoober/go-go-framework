@@ -32,8 +32,8 @@ type NewSnakeOptions struct {
 	Height         int
 	Framework      *framework.GoGoFramework
 	lastKeyPressed string
+	count          int
 	positionservice.Position
-	count int
 }
 
 func NewSnake(options NewSnakeOptions) *Snake {
@@ -91,7 +91,6 @@ func (s *Snake) Update(tick int) {
 			s.Framework.Registry.RemoveComponentById(s.Id, "snake")
 		}
 		s.Count = s.Count - 1
-
 	}
 }
 

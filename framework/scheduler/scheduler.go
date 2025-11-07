@@ -34,7 +34,6 @@ func (s *Scheduler) ScheduleDrawings(screen *ebiten.Image) {
 	for _, g := range s.registry.GetComponents() {
 		for _, c := range g {
 			screen.DrawImage(c.GetSprite(), c.GetOptions())
-
 		}
 	}
 }
