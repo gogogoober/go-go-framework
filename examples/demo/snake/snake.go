@@ -111,45 +111,49 @@ func getKeyPressed(previouseKeyPresssed string) string {
 	return previouseKeyPresssed
 }
 
-func (pc *Snake) handleMovement(keyPressed string) {
+func (s *Snake) handleMovement(keyPressed string) {
 	var dx = int(0)
 	var dy = int(0)
 
-	var snakeBody = pc.Framework.Registry.GetComponentGroupArray("snake")
-	var apple = pc.Framework.Registry.GetComponentGroupArray("apple")
+	var snakeBody = s.Framework.Registry.GetComponentGroupArray("snake")
+	var apple = s.Framework.Registry.GetComponentGroupArray("apple")
 
 	if keyPressed == "d" {
-		dx += pc.moveDistance
+		dx += s.moveDistance
 	}
 	if keyPressed == "a" {
-		dx -= pc.moveDistance
+		dx -= s.moveDistance
 	}
 
 	if keyPressed == "w" {
-		dy -= pc.moveDistance
+		dy -= s.moveDistance
 	}
 	if keyPressed == "s" {
-		dy += pc.moveDistance
+		dy += s.moveDistance
 	}
 
-	var newPosition = positionservice.MovePosition(pc.Position, dx, dy)
+	var newPosition = positionservice.MovePosition(s.Position, dx, dy)
 
-	if len(collisionservice.CheckCollision(newPosition, pc.Id, snakeBody)) != 0 {
+	if len(collisionservice.CheckCollision(newPosition, s.Id, snakeBody)) != 0 {
 		panic("Game Over x")
 	}
 
-	if len(collisionservice.CheckCollision(newPosition, pc.Id, apple)) != 0 {
-		pc.Count++
+	if newPosition.X < 0 || newPosition.Y < 0 || newPosition.X2 > s.Framework.Options.Window.Height || newPosition.Y2 > s.Framework.Options.Window.Width {
+		panic("Game Over x")
 	}
 
-	pc.IsPlayerControled = false
+	if len(collisionservice.CheckCollision(newPosition, s.Id, apple)) != 0 {
+		s.Count++
+	}
+
+	s.IsPlayerControled = false
 
 	var newBody = NewSnake(NewSnakeOptions{
-		Height:               pc.Sprite.Bounds().Size().X,
-		Framework:            pc.Framework,
+		Height:               s.Sprite.Bounds().Size().X,
+		Framework:            s.Framework,
 		previouseKeyPresssed: keyPressed,
 		Position:             newPosition,
-		count:                pc.Count,
+		count:                s.Count,
 	})
-	pc.Framework.Registry.AddComponent(newBody, "snake")
+	s.Framework.Registry.AddComponent(newBody, "snake")
 }
