@@ -1,6 +1,8 @@
 package hud
 
 import (
+	"fmt"
+	"go-go-Framework/framework"
 	"go-go-Framework/framework/entity"
 	"go-go-Framework/framework/services/positionservice"
 
@@ -11,19 +13,25 @@ import (
 type Hud struct {
 	sprite *ebiten.Image
 	op     *ebiten.DrawImageOptions
+
 	positionservice.Position
 	entity.Component
+	framework *framework.GoGoFramework
 }
 
-func NewHud() *Hud {
-	return &Hud{}
+func NewHud(framework *framework.GoGoFramework) *Hud {
+	return &Hud{
+		framework: framework,
+	}
 }
 
 func (h *Hud) GetId() string {
 	return ""
 }
 func (h *Hud) GetSprite(screen *ebiten.Image) *ebiten.Image {
-	ebitenutil.DebugPrint(screen, "Hello, World!")
+	s := fmt.Sprintf("Time: %s", h.framework.Services.GetPrettySeconds())
+
+	ebitenutil.DebugPrint(screen, s)
 	return h.sprite
 }
 func (h *Hud) GetOptions() *ebiten.DrawImageOptions {

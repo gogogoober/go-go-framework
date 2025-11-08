@@ -48,7 +48,7 @@ func RunDemo() {
 		framework: framework,
 	}
 
-	hud1 := hud.NewHud()
+	hud1 := hud.NewHud(framework)
 	snake1 := snake.NewSnake(snake.NewSnakeOptions{Height: width / grid, Framework: framework})
 	apple := npc.NewNpcComponent(npc.NewNPCOptions{Width: width / grid, Height: height / grid, Framework: framework})
 

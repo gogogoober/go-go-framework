@@ -58,7 +58,8 @@ func (g *GoGoFramework) Init() {
 
 func (g *GoGoFramework) Update() error {
 	g.tickCount++
-	g.Services.TimeService.TotalTicks = g.tickCount
+	g.Services.TimeService.TotalTicks = g.tickCount + g.Services.TimeService.TotalTicks
+	// fmt.Println(g.tickCount)
 	if g.tickCount%60 == 0 {
 		g.tickCount = 0
 	}

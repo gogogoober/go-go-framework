@@ -1,6 +1,8 @@
 package timeservice
 
-import "fmt"
+import (
+	"strconv"
+)
 
 type TimeService struct {
 	TotalTicks int
@@ -13,6 +15,6 @@ func NewTimeSerice() *TimeService {
 }
 
 func (t *TimeService) GetPrettySeconds() string {
-	fmt.Println(t.TotalTicks / 60)
-	return ""
+	var time = t.TotalTicks / 60
+	return strconv.Itoa(time)
 }
