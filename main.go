@@ -1,6 +1,6 @@
 package main
 
-import "go-go-framework/examples/demo"
+import "go-go-Framework/examples/demo"
 
 func main() {
 	demo.RunDemo()

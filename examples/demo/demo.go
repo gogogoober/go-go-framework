@@ -1,16 +1,23 @@
 package demo
 
 import (
-	"go-go-framework/src/gogoFramework"
-	"go-go-framework/src/utils"
-	"image/color"
+	"go-go-Framework/examples/demo/hud"
+	"go-go-Framework/examples/demo/npc"
+	"go-go-Framework/examples/demo/snake"
+	"go-go-Framework/framework"
+	"go-go-Framework/framework/window"
 	"log"
 
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
 type Game struct {
-	framework *gogoFramework.GoGoFramework
+	framework *framework.GoGoFramework
+}
+
+type GridPosisition struct {
+	x int
+	y int
 }
 
 func (g *Game) Update() error {
@@ -26,24 +33,32 @@ func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeigh
 }
 
 func RunDemo() {
-	demo := &Game{
-		framework: gogoFramework.NewGoGoFrameworkWithDefaults("DEMO"),
+	var width = 500
+	var height = 500
+	var grid = 20
+
+	var gameOptions = framework.GoGoFrameworkNewOptions{
+		Window:   &window.GoGoWindow{Width: width, Height: height},
+		GridSize: &window.GoGoWindow{Width: width / grid, Height: height / grid},
 	}
 
-	newScene := ebiten.NewImage(100, 100)
-	newScene.Fill(color.RGBA{0xee, 10, 50, 0xff})
+	var framework = framework.NewGoGoFramework(gameOptions)
 
-	circ := utils.NewCircle(40, color.RGBA{0xee, 0x10, 0x32, 0xff})
-	rect := utils.NewRect(120, 80, color.RGBA{60, 160, 255, 255})
+	demo := &Game{
+		framework: framework,
+	}
 
-	demo.framework.RegisterScene(newScene)
-	demo.framework.AddNpc(rect)
-	demo.framework.AddNpc(circ)
+	hud1 := hud.NewHud(framework)
+	snake1 := snake.NewSnake(snake.NewSnakeOptions{Height: width / grid, Framework: framework})
+	apple := npc.NewNpcComponent(npc.NewNPCOptions{Width: width / grid, Height: height / grid, Framework: framework})
 
-	ebiten.SetWindowSize(620, 620)
-	ebiten.SetWindowTitle("Animation (Ebitengine Demo)")
+	demo.framework.Registry.AddComponent(hud1, "hud")
+	demo.framework.Registry.AddComponent(snake1, "snake")
+	demo.framework.Registry.AddComponent(apple, "apple")
+
+	demo.framework.Init()
+
 	err := ebiten.RunGame(demo)
-
 	if err != nil {
 		log.Fatal(err)
 		panic(err)
