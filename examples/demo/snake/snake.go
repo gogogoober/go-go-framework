@@ -80,13 +80,14 @@ func (s *Snake) GetPosition() *positionservice.Position {
 	return &s.Position
 }
 func (s *Snake) Update(tick int) {
-	s.previouseKeyPresssed = getKeyPressed(s.previouseKeyPresssed)
+	s.previouseKeyPresssed = getKeyJustPressed(s.previouseKeyPresssed)
 
 	if s.previouseKeyPresssed == "" {
 		return
 	}
 
 	if tick%8 == 0 {
+
 		if s.IsPlayerControled {
 			s.handleMovement(s.previouseKeyPresssed)
 		}
@@ -95,6 +96,23 @@ func (s *Snake) Update(tick int) {
 		}
 		s.Count = s.Count - 1
 	}
+}
+
+func getKeyJustPressed(previouseKeyPresssed string) string {
+	if inputservice.IsKeyStringJustPressed("d") && previouseKeyPresssed != "a" {
+		return "d"
+	}
+	if inputservice.IsKeyStringJustPressed("a") && previouseKeyPresssed != "d" {
+		return "a"
+	}
+	if inputservice.IsKeyStringJustPressed("w") && previouseKeyPresssed != "s" {
+		return "w"
+	}
+	if inputservice.IsKeyStringJustPressed("s") && previouseKeyPresssed != "w" {
+		return "s"
+	}
+
+	return previouseKeyPresssed
 }
 
 func getKeyPressed(previouseKeyPresssed string) string {
