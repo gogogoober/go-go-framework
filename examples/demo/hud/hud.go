@@ -29,9 +29,11 @@ func (h *Hud) GetId() string {
 	return ""
 }
 func (h *Hud) GetSprite(screen *ebiten.Image) *ebiten.Image {
-	s := fmt.Sprintf("Time: %s", h.framework.Services.GetPrettySeconds())
 
-	ebitenutil.DebugPrint(screen, s)
+	var time = fmt.Sprintf("Time Elapsed: %s", h.framework.Services.GetPrettyTime())
+	var points = fmt.Sprintf("Points: %d", len(h.framework.Registry.GetComponentGroupArray("snake")))
+
+	ebitenutil.DebugPrint(screen, fmt.Sprintf(" %s | %s ", points, time))
 	return h.sprite
 }
 func (h *Hud) GetOptions() *ebiten.DrawImageOptions {
