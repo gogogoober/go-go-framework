@@ -86,7 +86,7 @@ func (s *Snake) Update(tick int) {
 		return
 	}
 
-	if tick%8 == 0 {
+	if tick%s.Framework.Options.GlobalTick == 0 {
 
 		if s.IsPlayerControled {
 			s.handleMovement(s.previouseKeyPresssed)

@@ -8,17 +8,19 @@ import (
 )
 
 type Scheduler struct {
-	registry *registry.Registry
+	registry   *registry.Registry
+	globalTick int
 }
 
-func NewScheduler(registry *registry.Registry) *Scheduler {
+func NewScheduler(registry *registry.Registry, globalTick int) *Scheduler {
 	return &Scheduler{
-		registry: registry,
+		registry:   registry,
+		globalTick: globalTick,
 	}
 }
 
 func (s *Scheduler) ScheduleUpdates(tick int) {
-	if tick%60 == 0 {
+	if tick%s.globalTick == 0 {
 		fmt.Println("---------")
 		fmt.Println("Global Tick")
 	}

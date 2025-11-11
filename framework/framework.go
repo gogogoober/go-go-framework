@@ -22,9 +22,10 @@ type GoGoServices struct {
 }
 
 type GoGoFrameworkNewOptions struct {
-	GameName string
-	Window   *window.GoGoWindow
-	GridSize *window.GoGoWindow
+	GlobalTick int
+	GameName   string
+	Window     *window.GoGoWindow
+	GridSize   *window.GoGoWindow
 }
 
 func NewGoGoFramework(options GoGoFrameworkNewOptions) *GoGoFramework {
@@ -38,6 +39,9 @@ func NewGoGoFramework(options GoGoFrameworkNewOptions) *GoGoFramework {
 	if options.GridSize == nil {
 		options.GridSize = &window.GoGoWindow{Width: 1, Height: 1}
 	}
+	if options.GlobalTick == 0 {
+		options.GlobalTick = 10
+	}
 
 	var GoGoServices = &GoGoServices{
 		timeservice.NewTimeSerice(),
@@ -45,7 +49,7 @@ func NewGoGoFramework(options GoGoFrameworkNewOptions) *GoGoFramework {
 
 	return &GoGoFramework{
 		Registry:  reg,
-		Scheduler: scheduler.NewScheduler(reg),
+		Scheduler: scheduler.NewScheduler(reg, options.GlobalTick),
 		Options:   options,
 		Services:  GoGoServices,
 	}
