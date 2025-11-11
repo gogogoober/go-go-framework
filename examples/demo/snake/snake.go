@@ -92,7 +92,7 @@ func (s *Snake) Update(tick int) {
 			s.handleMovement(s.previouseKeyPresssed)
 		}
 		if s.Count == 0 {
-			s.Framework.Registry.RemoveComponentById(s.Id, "snake")
+			s.Framework.Registry.RemoveComponent("snake", s)
 		}
 		s.Count = s.Count - 1
 	}
@@ -176,7 +176,7 @@ func (s *Snake) handleMovement(keyPressed string) {
 		Position:             newPosition,
 		Count:                s.Count,
 	})
-	s.Framework.Registry.AddComponent(newBody, "snake")
+	s.Framework.Registry.AddComponent("snake", newBody)
 
 }
 
@@ -187,5 +187,5 @@ func reset(framework *framework.GoGoFramework, height int) {
 		Height:    height,
 		Framework: framework,
 	})
-	framework.Registry.AddComponent(newBody, "snake")
+	framework.Registry.AddComponent("snake", newBody)
 }

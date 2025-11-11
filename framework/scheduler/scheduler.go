@@ -23,7 +23,7 @@ func (s *Scheduler) ScheduleUpdates(tick int) {
 		fmt.Println("Global Tick")
 	}
 
-	for _, g := range s.registry.GetComponents() {
+	for _, g := range s.registry.GetLiveComponents() {
 		for _, c := range g {
 			c.Update(tick)
 		}
@@ -31,7 +31,7 @@ func (s *Scheduler) ScheduleUpdates(tick int) {
 }
 
 func (s *Scheduler) ScheduleDrawings(screen *ebiten.Image) {
-	for _, g := range s.registry.GetComponents() {
+	for _, g := range s.registry.GetLiveComponents() {
 		for _, c := range g {
 			sprite := c.GetSprite(screen)
 			if sprite == nil {

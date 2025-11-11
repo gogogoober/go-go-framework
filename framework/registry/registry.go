@@ -12,14 +12,24 @@ type Registry struct {
 	Npcs               []entity.Component
 	components         map[string]map[string]entity.Component
 	ComponentsSnapshot map[string]map[string]entity.Component
+	RegistryQueues
+}
+
+type RegistryQueues struct {
+	addComponent    map[string]map[string]entity.Component
+	removeComponent map[string]map[string]entity.Component
+	removeGroup     []string
 }
 
 func NewRegistry() *Registry {
 	return &Registry{
-		Players:            make([]entity.Component, 0),
-		Npcs:               make([]entity.Component, 0),
 		components:         make(map[string]map[string]entity.Component),
 		ComponentsSnapshot: make(map[string]map[string]entity.Component),
+		RegistryQueues: RegistryQueues{
+			addComponent:    make(map[string]map[string]entity.Component),
+			removeComponent: make(map[string]map[string]entity.Component),
+			removeGroup:     []string{},
+		},
 	}
 }
 
@@ -36,42 +46,58 @@ func (r *Registry) UpdateSnapshot() {
 }
 
 func (r *Registry) UpdateComponents() {
-	// for groupKey, group := range r.components {
-	// 	for compKey, _ := range group {
-	// 		group[compKey] = r.ComponentsSnapshot[groupKey][compKey]
-	// 	}
-	// }
+	for _, group := range r.RegistryQueues.removeGroup {
+		delete(r.components, group)
+	}
 
-	// snap := make(map[string]map[string]entity.Component, len(r.ComponentsSnapshot))
-	// for group, comps := range r.ComponentsSnapshot {
-	// 	groupCopy := make(map[string]entity.Component, len(comps))
-	// 	for id, comp := range comps {
-	// 		groupCopy[id] = comp
-	// 	}
-	// 	snap[group] = groupCopy
-	// }
-	// r.components = snap
+	for groupKey, group := range r.RegistryQueues.removeComponent {
+		for _, c := range group {
+			if groupMap, ok := r.components[groupKey]; ok {
+				delete(groupMap, c.GetId())
+			}
+		}
+	}
+
+	for groupKey, group := range r.RegistryQueues.addComponent {
+		for _, c := range group {
+			if _, ok := r.components[groupKey]; !ok {
+				r.components[groupKey] = make(map[string]entity.Component)
+			}
+			r.components[groupKey][c.GetId()] = c
+		}
+	}
+
+	r.RegistryQueues = RegistryQueues{
+		addComponent:    make(map[string]map[string]entity.Component),
+		removeComponent: make(map[string]map[string]entity.Component),
+		removeGroup:     []string{},
+	}
 }
 
 func (r *Registry) SetScene(s *ebiten.Image) {
 	r.Scene = s
 }
 
-func (r *Registry) AddComponent(c entity.Component, group string) {
-	if _, ok := r.components[group]; !ok {
-		r.components[group] = make(map[string]entity.Component)
+func (r *Registry) AddComponent(group string, c entity.Component) {
+	if _, ok := r.RegistryQueues.addComponent[group]; !ok {
+		r.RegistryQueues.addComponent[group] = make(map[string]entity.Component)
 	}
-	r.components[group][c.GetId()] = c
+	r.RegistryQueues.addComponent[group][c.GetId()] = c
 }
 
-func (r *Registry) RemoveComponentById(id string, group string) {
-	if groupMap, ok := r.components[group]; ok {
-		delete(groupMap, id)
+func (r *Registry) RemoveComponent(group string, c entity.Component) {
+	if _, ok := r.RegistryQueues.removeComponent[group]; !ok {
+		r.RegistryQueues.removeComponent[group] = make(map[string]entity.Component)
 	}
+	r.RegistryQueues.removeComponent[group][c.GetId()] = c
 }
 
-func (r *Registry) RemoveGroupById(group string) {
-	delete(r.components, group)
+func (r *Registry) RemoveGroupById(groupId string) {
+	r.RegistryQueues.removeGroup = append(r.RegistryQueues.removeGroup, groupId)
+}
+
+func (r *Registry) GetLiveComponents() map[string]map[string]entity.Component {
+	return r.ComponentsSnapshot
 }
 
 func (r *Registry) GetComponents() map[string]map[string]entity.Component {
