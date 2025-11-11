@@ -136,9 +136,6 @@ func (s *Snake) handleMovement(keyPressed string) {
 	var dx = int(0)
 	var dy = int(0)
 
-	var snakeBody = s.Framework.Registry.GetComponentGroupArray("snake")
-	var apple = s.Framework.Registry.GetComponentGroupArray("apple")
-
 	if keyPressed == "d" {
 		dx += s.moveDistance
 	}
@@ -154,8 +151,10 @@ func (s *Snake) handleMovement(keyPressed string) {
 	}
 
 	var newPosition = positionservice.MovePosition(s.Position, dx, dy)
-	var isCollidingWithSelf = len(collisionservice.CheckCollision(newPosition, snakeBody)) != 0
 	var isOutOfBounds = newPosition.X < 0 || newPosition.Y < 0 || newPosition.X2 > s.Framework.Options.Window.Height || newPosition.Y2 > s.Framework.Options.Window.Width
+
+	var snakeBody = s.Framework.Registry.GetComponentGroupArray("snake")
+	var isCollidingWithSelf = len(collisionservice.CheckCollision(newPosition, snakeBody)) != 0
 
 	if isOutOfBounds || isCollidingWithSelf {
 		fmt.Println("Game Over x")
@@ -163,6 +162,7 @@ func (s *Snake) handleMovement(keyPressed string) {
 		return
 	}
 
+	var apple = s.Framework.Registry.GetComponentGroupArray("apple")
 	if len(collisionservice.CheckCollision(newPosition, apple)) != 0 {
 		s.Count++
 	}
