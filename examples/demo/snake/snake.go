@@ -66,6 +66,7 @@ func NewSnake(options NewSnakeOptions) *Snake {
 		Height:               options.Height,
 	}
 }
+func (s *Snake) Init() {}
 
 func (s *Snake) GetId() string {
 	return s.Id

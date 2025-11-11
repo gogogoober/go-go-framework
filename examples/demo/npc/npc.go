@@ -52,6 +52,8 @@ func NewNpcComponent(options NewNPCOptions) *NpcComponent {
 	}
 }
 
+func (s *NpcComponent) Init() {}
+
 func (np *NpcComponent) GetId() string {
 	return np.Id
 }
