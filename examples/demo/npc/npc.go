@@ -7,7 +7,6 @@ import (
 	"go-go-Framework/framework/services/positionservice"
 	"go-go-Framework/framework/utils"
 	"image/color"
-	"math/rand"
 
 	"github.com/google/uuid"
 	"github.com/hajimehoshi/ebiten/v2"
@@ -19,7 +18,7 @@ type NpcComponent struct {
 	op                 ebiten.DrawImageOptions
 	npcs               []entity.Component
 	players            []entity.Component
-	possiblePossitions []GridPosisition
+	possiblePossitions []positionservice.GridPosisition
 	contact            bool
 	entity.Component
 	positionservice.Position
@@ -32,18 +31,14 @@ type NewNPCOptions struct {
 	Framework *framework.GoGoFramework
 }
 
-type GridPosisition struct {
-	x int
-	y int
-}
-
 func NewNpcComponent(options NewNPCOptions) *NpcComponent {
 	rect := utils.NewRect(float32(options.Width), float32(options.Height), color.RGBA{225, 0, 0, 1})
 	op := ebiten.DrawImageOptions{}
 
-	var pp = getPositions(options.Framework)
-	var newPos = getNewPosition(pp, make([]entity.Component, 0))
-	op.GeoM.Translate(float64(newPos.x), float64(newPos.y))
+	var pp = positionservice.GetPositions(*options.Framework.Options.Window, *options.Framework.Options.GridSize)
+	var snakeBody = options.Framework.Registry.GetComponentGroupArray("snake")
+	var newPos = positionservice.GetNewPosition(pp, snakeBody)
+	op.GeoM.Translate(float64(newPos.X), float64(newPos.Y))
 
 	return &NpcComponent{
 		Id:                 uuid.NewString(),
@@ -52,7 +47,7 @@ func NewNpcComponent(options NewNPCOptions) *NpcComponent {
 		possiblePossitions: pp,
 		contact:            false,
 		npcs:               make([]entity.Component, 0),
-		Position:           positionservice.GetRectanglePosition(newPos.x, newPos.y, rect.Bounds().Size().X, rect.Bounds().Size().Y),
+		Position:           positionservice.GetRectanglePosition(newPos.X, newPos.Y, rect.Bounds().Size().X, rect.Bounds().Size().Y),
 		Framework:          options.Framework,
 	}
 }
@@ -74,60 +69,12 @@ func (np *NpcComponent) Update(tick int) {
 	var snake = np.Framework.Registry.GetComponentGroupArray("snake")
 	var collisionSnake = collisionservice.CheckCollision(np.Position, snake)
 	if len(collisionSnake) > 0 {
-		var newPos = getNewPosition(np.possiblePossitions, snake)
-		position := positionservice.GetRectanglePosition(newPos.x, newPos.y, np.sprite.Bounds().Size().X, np.sprite.Bounds().Size().Y)
+		var newPos = positionservice.GetNewPosition(np.possiblePossitions, snake)
+		position := positionservice.GetRectanglePosition(newPos.X, newPos.Y, np.sprite.Bounds().Size().X, np.sprite.Bounds().Size().Y)
 
 		np.Position = position
 		np.op.GeoM.Reset() // important
 		np.op.GeoM.Translate(float64(position.X), float64(position.Y))
 	}
 
-}
-
-func getPositions(Framework *framework.GoGoFramework) []GridPosisition {
-	gh := Framework.Options.Window.Height
-	gw := Framework.Options.Window.Width
-	ggh := Framework.Options.GridSize.Height
-	ggw := Framework.Options.GridSize.Width
-
-	var hg = (gh / ggh)
-	// var wg = (gw / ggw)
-
-	var positions = make([]GridPosisition, hg)
-	var count = 0
-
-	for i := 0; i < gh; i = i + ggh {
-		positions[count].y = i
-		count++
-	}
-	count = 0
-	for i := 0; i < gw; i = i + ggw {
-		positions[count].x = i
-		count++
-
-	}
-	return positions
-}
-
-func getNewPosition(pp []GridPosisition, players []entity.Component) GridPosisition {
-	var newPosition []GridPosisition
-
-	if len(players) == 0 {
-		newPosition = pp
-	} else {
-		for i := range players {
-			for j := range pp {
-				var pPos = players[i].GetPosition()
-				if pp[j].x != pPos.X && pp[j].y != pPos.Y {
-					newPosition = append(newPosition, pp[j])
-
-				}
-			}
-		}
-
-	}
-
-	var posPick = rand.Intn(len(newPosition))
-	var _np = newPosition[posPick]
-	return _np
 }

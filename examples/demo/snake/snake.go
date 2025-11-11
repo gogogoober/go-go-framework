@@ -40,7 +40,7 @@ type NewSnakeOptions struct {
 
 func NewSnake(options NewSnakeOptions) *Snake {
 	var pp = positionservice.GetPositions(*options.Framework.Options.Window, *options.Framework.Options.GridSize)
-	var newPos = positionservice.GetNewPosition(pp, make([]positionservice.GridPosisitionI, 0))
+	var newPos = positionservice.GetNewPosition(pp, make([]entity.Component, 0))
 
 	zeroPos := positionservice.Position{}
 
