@@ -37,7 +37,7 @@ func NewNpcComponent(options NewNPCOptions) *NpcComponent {
 
 	var pp = positionservice.GetPositions(*options.Framework.Options.Window, *options.Framework.Options.GridSize)
 	var snakeBody = options.Framework.Registry.GetComponentGroupArray("snake")
-	var newPos = positionservice.GetNewPosition(pp, snakeBody)
+	var newPos, _ = positionservice.GetNewPosition(pp, snakeBody)
 	op.GeoM.Translate(float64(newPos.X), float64(newPos.Y))
 
 	return &NpcComponent{
@@ -69,7 +69,7 @@ func (np *NpcComponent) Update(tick int) {
 	var snake = np.Framework.Registry.GetComponentGroupArray("snake")
 	var collisionSnake = collisionservice.CheckCollision(np.Position, snake)
 	if len(collisionSnake) > 0 {
-		var newPos = positionservice.GetNewPosition(np.possiblePossitions, snake)
+		var newPos, _ = positionservice.GetNewPosition(np.possiblePossitions, snake)
 		position := positionservice.GetRectanglePosition(newPos.X, newPos.Y, np.sprite.Bounds().Size().X, np.sprite.Bounds().Size().Y)
 
 		np.Position = position

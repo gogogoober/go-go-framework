@@ -17,10 +17,6 @@ type GridPosisition struct {
 	Y int
 }
 
-type PositionGetter interface {
-	GetPosition() *Position
-}
-
 func GetRectanglePosition(x, y, width, height int) Position {
 	return Position{x, y, x + width, y + height}
 }
@@ -55,23 +51,29 @@ func GetPositions(window window.GoGoWindow, gridSize window.GoGoWindow) []GridPo
 	return positions
 }
 
-func GetNewPosition[T PositionGetter](pp []GridPosisition, players []T) GridPosisition {
+func GetNewPosition[T interface{ GetPosition() *Position }](possiblePossitions []GridPosisition, players []T) (GridPosisition, bool) {
+
+	if len(possiblePossitions) == 0 {
+		return GridPosisition{}, false
+
+	}
+
 	blocked := make(map[GridPosisition]struct{}, len(players))
-	available := make([]GridPosisition, 0, len(pp))
+	available := make([]GridPosisition, 0, len(possiblePossitions))
 
 	for _, p := range players {
 		pos := p.GetPosition()
 		blocked[GridPosisition{X: pos.X, Y: pos.Y}] = struct{}{}
 	}
 
-	for _, cell := range pp {
+	for _, cell := range possiblePossitions {
 		if _, used := blocked[cell]; !used {
 			available = append(available, cell)
 		}
 	}
 
 	if len(available) == 0 {
-		return GridPosisition{}
+		return GridPosisition{}, false
 	}
-	return available[rand.Intn(len(available))]
+	return available[rand.Intn(len(available))], true
 }
