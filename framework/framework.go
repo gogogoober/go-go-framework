@@ -63,10 +63,11 @@ func (g *GoGoFramework) Init() {
 func (g *GoGoFramework) Update() error {
 	g.tickCount++
 	g.Services.TimeService.TotalTicks = g.tickCount
-	g.Registry.UpdateSnapshot()
-	g.Scheduler.ScheduleUpdates(g.tickCount)
 	g.Registry.UpdateComponents()
-
+	g.Registry.UpdateSnapshot()
+	g.Registry.InitAddedComponents()
+	g.Registry.ResetQueues()
+	g.Scheduler.ScheduleUpdates(g.tickCount)
 	return nil
 }
 

@@ -67,6 +67,9 @@ func (r *Registry) UpdateComponents() {
 		}
 	}
 
+}
+
+func (r *Registry) InitAddedComponents() {
 	for groupKey, group := range r.RegistryQueues.addComponent {
 		if _, ok := r.components[groupKey]; ok {
 			for compKey, _ := range group {
@@ -76,7 +79,9 @@ func (r *Registry) UpdateComponents() {
 			}
 		}
 	}
+}
 
+func (r *Registry) ResetQueues() {
 	r.RegistryQueues = RegistryQueues{
 		addComponent:    make(map[string]map[string]entity.Component),
 		removeComponent: make(map[string]map[string]entity.Component),
