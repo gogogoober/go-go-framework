@@ -8,22 +8,24 @@ import (
 )
 
 type Scheduler struct {
-	registry *registry.Registry
+	registry   *registry.Registry
+	globalTick int
 }
 
-func NewScheduler(registry *registry.Registry) *Scheduler {
+func NewScheduler(registry *registry.Registry, globalTick int) *Scheduler {
 	return &Scheduler{
-		registry: registry,
+		registry:   registry,
+		globalTick: globalTick,
 	}
 }
 
 func (s *Scheduler) ScheduleUpdates(tick int) {
-	if tick%60 == 0 {
+	if tick%s.globalTick == 0 {
 		fmt.Println("---------")
 		fmt.Println("Global Tick")
 	}
 
-	for _, g := range s.registry.GetComponents() {
+	for _, g := range s.registry.GetLiveComponents() {
 		for _, c := range g {
 			c.Update(tick)
 		}
@@ -31,7 +33,7 @@ func (s *Scheduler) ScheduleUpdates(tick int) {
 }
 
 func (s *Scheduler) ScheduleDrawings(screen *ebiten.Image) {
-	for _, g := range s.registry.GetComponents() {
+	for _, g := range s.registry.GetLiveComponents() {
 		for _, c := range g {
 			sprite := c.GetSprite(screen)
 			if sprite == nil {

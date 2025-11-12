@@ -38,8 +38,9 @@ func RunDemo() {
 	var grid = 20
 
 	var gameOptions = framework.GoGoFrameworkNewOptions{
-		Window:   &window.GoGoWindow{Width: width, Height: height},
-		GridSize: &window.GoGoWindow{Width: width / grid, Height: height / grid},
+		Window:     &window.GoGoWindow{Width: width, Height: height},
+		GridSize:   &window.GoGoWindow{Width: width / grid, Height: height / grid},
+		GlobalTick: 60,
 	}
 
 	var framework = framework.NewGoGoFramework(gameOptions)
@@ -52,9 +53,9 @@ func RunDemo() {
 	snake1 := snake.NewSnake(snake.NewSnakeOptions{Height: width / grid, Framework: framework})
 	apple := npc.NewNpcComponent(npc.NewNPCOptions{Width: width / grid, Height: height / grid, Framework: framework})
 
-	demo.framework.Registry.AddComponent(hud1, "hud")
-	demo.framework.Registry.AddComponent(snake1, "snake")
-	demo.framework.Registry.AddComponent(apple, "apple")
+	demo.framework.Registry.AddComponent("hud", hud1)
+	demo.framework.Registry.AddComponent("snake", snake1)
+	demo.framework.Registry.AddComponent("apple", apple)
 
 	demo.framework.Init()
 

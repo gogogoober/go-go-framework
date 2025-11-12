@@ -25,6 +25,8 @@ func NewHud(framework *framework.GoGoFramework) *Hud {
 	}
 }
 
+func (s *Hud) Init() {}
+
 func (h *Hud) GetId() string {
 	return ""
 }

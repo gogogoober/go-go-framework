@@ -7,6 +7,7 @@ import (
 )
 
 type Component interface {
+	Init()
 	GetId() string
 	GetSprite(screen *ebiten.Image) *ebiten.Image
 	GetOptions() *ebiten.DrawImageOptions
