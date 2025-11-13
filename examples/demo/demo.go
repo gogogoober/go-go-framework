@@ -5,6 +5,7 @@ import (
 	"go-go-Framework/examples/demo/npc"
 	"go-go-Framework/examples/demo/snake"
 	"go-go-Framework/framework"
+	"go-go-Framework/framework/interactionsystem"
 	"go-go-Framework/framework/window"
 	"log"
 
@@ -32,15 +33,35 @@ func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeigh
 	return g.framework.Layout(outsideWidth, outsideHeight)
 }
 
+type ActionInteraction struct {
+	Id   string
+	kick int
+}
+
+type TalkInteraction struct {
+	Id   string
+	talk string
+}
+
+type Interactions struct {
+	ActionInteraction
+	TalkInteraction
+}
+
+func (ia *Interactions) GetId() string {
+	return ""
+}
+
 func RunDemo() {
 	var width = 500
 	var height = 500
 	var grid = 20
 
 	var gameOptions = framework.GoGoFrameworkNewOptions{
-		Window:     &window.GoGoWindow{Width: width, Height: height},
-		GridSize:   &window.GoGoWindow{Width: width / grid, Height: height / grid},
-		GlobalTick: 20,
+		Window:            &window.GoGoWindow{Width: width, Height: height},
+		GridSize:          &window.GoGoWindow{Width: width / grid, Height: height / grid},
+		GlobalTick:        20,
+		InteractionSystem: interactionsystem.NewInteractionSystem[interactionsystem.InteractionItem](),
 	}
 
 	var framework = framework.NewGoGoFramework(gameOptions)

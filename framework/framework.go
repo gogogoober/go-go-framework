@@ -1,6 +1,7 @@
 package framework
 
 import (
+	"go-go-Framework/framework/interactionsystem"
 	"go-go-Framework/framework/registry"
 	"go-go-Framework/framework/scheduler"
 	"go-go-Framework/framework/services/timeservice"
@@ -10,11 +11,12 @@ import (
 )
 
 type GoGoFramework struct {
-	tickCount int
-	Registry  *registry.Registry
-	Scheduler *scheduler.Scheduler
-	Options   GoGoFrameworkNewOptions
-	Services  *GoGoServices
+	tickCount         int
+	Registry          *registry.Registry
+	Scheduler         *scheduler.Scheduler
+	Options           GoGoFrameworkNewOptions
+	Services          *GoGoServices
+	InteractionSystem *interactionsystem.InteractionSystem[interactionsystem.InteractionItem]
 }
 
 type GoGoServices struct {
@@ -22,10 +24,11 @@ type GoGoServices struct {
 }
 
 type GoGoFrameworkNewOptions struct {
-	GlobalTick int
-	GameName   string
-	Window     *window.GoGoWindow
-	GridSize   *window.GoGoWindow
+	GlobalTick        int
+	GameName          string
+	Window            *window.GoGoWindow
+	GridSize          *window.GoGoWindow
+	InteractionSystem *interactionsystem.InteractionSystem[interactionsystem.InteractionItem]
 }
 
 func NewGoGoFramework(options GoGoFrameworkNewOptions) *GoGoFramework {
@@ -48,10 +51,11 @@ func NewGoGoFramework(options GoGoFrameworkNewOptions) *GoGoFramework {
 	}
 
 	return &GoGoFramework{
-		Registry:  reg,
-		Scheduler: scheduler.NewScheduler(reg, options.GlobalTick),
-		Options:   options,
-		Services:  GoGoServices,
+		Registry:          reg,
+		Scheduler:         scheduler.NewScheduler(reg, options.GlobalTick),
+		Options:           options,
+		Services:          GoGoServices,
+		InteractionSystem: options.InteractionSystem,
 	}
 }
 
