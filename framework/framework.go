@@ -71,8 +71,8 @@ func (g *GoGoFramework) Update() error {
 	g.Registry.UpdateSnapshot()
 	g.Registry.InitAddedComponents()
 	g.Registry.ResetQueues()
-	g.Scheduler.ScheduleUpdates(g.tickCount)
 	g.InteractionSystem.Reset()
+	g.Scheduler.ScheduleUpdates(g.tickCount)
 	return nil
 }
 

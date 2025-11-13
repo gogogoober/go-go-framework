@@ -1,7 +1,6 @@
 package scheduler
 
 import (
-	"fmt"
 	"go-go-Framework/framework/registry"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -20,11 +19,6 @@ func NewScheduler(registry *registry.Registry, globalTick int) *Scheduler {
 }
 
 func (s *Scheduler) ScheduleUpdates(tick int) {
-	if tick%s.globalTick == 0 {
-		fmt.Println("---------")
-		fmt.Println("Global Tick")
-	}
-
 	for _, g := range s.registry.GetLiveComponents() {
 		for _, c := range g {
 			c.Update(tick)
