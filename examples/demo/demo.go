@@ -40,7 +40,7 @@ func RunDemo() {
 	var gameOptions = framework.GoGoFrameworkNewOptions{
 		Window:     &window.GoGoWindow{Width: width, Height: height},
 		GridSize:   &window.GoGoWindow{Width: width / grid, Height: height / grid},
-		GlobalTick: 60,
+		GlobalTick: 20,
 	}
 
 	var framework = framework.NewGoGoFramework(gameOptions)
