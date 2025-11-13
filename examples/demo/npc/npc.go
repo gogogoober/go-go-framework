@@ -1,6 +1,8 @@
 package npc
 
 import (
+	"fmt"
+	"go-go-Framework/examples/demo/snake"
 	"go-go-Framework/framework"
 	"go-go-Framework/framework/entity"
 	"go-go-Framework/framework/services/collisionservice"
@@ -68,6 +70,18 @@ func (np *NpcComponent) GetPosition() *positionservice.Position {
 	return &np.Position
 }
 func (np *NpcComponent) Update(tick int) {
+	var events, ok = np.Framework.InteractionSystem.GetInteraction(np.Id)
+	if ok {
+		for _, event := range events {
+			switch e := event.(type) {
+			case snake.SnakeInteraction:
+				fmt.Println(e.Talk)
+			default:
+				// Ignore unknown events
+			}
+		}
+	}
+
 	var snake = np.Framework.Registry.GetComponentGroupArray("snake")
 	var collisionSnake = collisionservice.CheckCollision(np.Position, snake)
 	if len(collisionSnake) > 0 {

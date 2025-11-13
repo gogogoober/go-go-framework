@@ -38,6 +38,16 @@ type NewSnakeOptions struct {
 	positionservice.Position
 }
 
+type SnakeInteraction struct {
+	Id   string
+	Talk string
+}
+
+// GetId implements interactionsystem.InteractionItem.
+func (s SnakeInteraction) GetId() string {
+	panic("unimplemented")
+}
+
 func NewSnake(options NewSnakeOptions) *Snake {
 	var pp = positionservice.GetPositions(*options.Framework.Options.Window, *options.Framework.Options.GridSize)
 	var newPos, _ = positionservice.GetNewPosition(pp, make([]entity.Component, 0))
@@ -166,7 +176,11 @@ func (s *Snake) handleMovement(keyPressed string) {
 	}
 
 	var apple = s.Registry.GetComponentGroupArray("apple")
-	if len(collisionservice.CheckCollision(newPosition, apple)) != 0 {
+	var apples = collisionservice.CheckCollision(newPosition, apple)
+	if len(apples) != 0 {
+		for _, a := range apples {
+			s.InteractionSystem.AddInteraction(a.GetId(), SnakeInteraction{s.Id, "Eat Shit and Die"})
+		}
 		s.Count++
 	}
 

@@ -46,6 +46,7 @@ type TalkInteraction struct {
 type Interactions struct {
 	ActionInteraction
 	TalkInteraction
+	snake.SnakeInteraction
 }
 
 func (ia *Interactions) GetId() string {
