@@ -43,7 +43,6 @@ type SnakeInteraction struct {
 	Talk string
 }
 
-// GetId implements interactionsystem.InteractionItem.
 func (s SnakeInteraction) GetId() string {
 	panic("unimplemented")
 }
