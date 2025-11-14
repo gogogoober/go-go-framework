@@ -8,8 +8,6 @@ import (
 
 type Registry struct {
 	Scene              *ebiten.Image
-	Players            []entity.Component
-	Npcs               []entity.Component
 	components         map[string]map[string]entity.Component
 	ComponentsSnapshot map[string]map[string]entity.Component
 	RegistryQueues
