@@ -21,7 +21,6 @@ func NewScheduler(registry *registry.Registry, globalTick int) *Scheduler {
 }
 
 func (s *Scheduler) ScheduleUpdates(tick int) {
-
 	var wg sync.WaitGroup
 
 	for _, g := range s.registry.GetLiveComponents() {
