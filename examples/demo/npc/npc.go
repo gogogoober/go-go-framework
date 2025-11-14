@@ -70,7 +70,7 @@ func (np *NpcComponent) GetPosition() *positionservice.Position {
 	return &np.Position
 }
 func (np *NpcComponent) Update(tick int) {
-	var events, ok = np.Framework.InteractionSystem.GetInteraction(np.Id)
+	var events, ok = np.Framework.InteractionSystem.GetInteractions(np.Id)
 	if ok {
 		for _, event := range events {
 			switch e := event.(type) {

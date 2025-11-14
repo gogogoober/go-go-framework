@@ -1,7 +1,6 @@
 package framework
 
 import (
-	"go-go-Framework/framework/interactionsystem"
 	"go-go-Framework/framework/registry"
 	"go-go-Framework/framework/scheduler"
 	"go-go-Framework/framework/services/timeservice"
@@ -16,7 +15,7 @@ type GoGoFramework struct {
 	Scheduler         *scheduler.Scheduler
 	Options           GoGoFrameworkNewOptions
 	Services          *GoGoServices
-	InteractionSystem *interactionsystem.InteractionSystem[interactionsystem.InteractionItem]
+	InteractionSystem *registry.InteractionSystem[registry.InteractionItem]
 }
 
 type GoGoServices struct {
@@ -28,7 +27,7 @@ type GoGoFrameworkNewOptions struct {
 	GameName          string
 	Window            *window.GoGoWindow
 	GridSize          *window.GoGoWindow
-	InteractionSystem *interactionsystem.InteractionSystem[interactionsystem.InteractionItem]
+	InteractionSystem *registry.InteractionSystem[registry.InteractionItem]
 }
 
 func NewGoGoFramework(options GoGoFrameworkNewOptions) *GoGoFramework {
@@ -68,11 +67,13 @@ func (g *GoGoFramework) Update() error {
 	g.tickCount++
 	g.Services.TimeService.TotalTicks = g.tickCount
 	g.Registry.UpdateComponents()
+	g.InteractionSystem.UpdateInteractionSystemSnapshot()
 	g.Registry.UpdateSnapshot()
 	g.Registry.InitAddedComponents()
 	g.Registry.ResetQueues()
-	g.InteractionSystem.Reset()
 	g.Scheduler.ScheduleUpdates(g.tickCount)
+	g.InteractionSystem.Reset()
+
 	return nil
 }
 

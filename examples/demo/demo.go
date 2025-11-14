@@ -5,7 +5,7 @@ import (
 	"go-go-Framework/examples/demo/npc"
 	"go-go-Framework/examples/demo/snake"
 	"go-go-Framework/framework"
-	"go-go-Framework/framework/interactionsystem"
+	"go-go-Framework/framework/registry"
 	"go-go-Framework/framework/window"
 	"log"
 
@@ -62,7 +62,7 @@ func RunDemo() {
 		Window:            &window.GoGoWindow{Width: width, Height: height},
 		GridSize:          &window.GoGoWindow{Width: width / grid, Height: height / grid},
 		GlobalTick:        20,
-		InteractionSystem: interactionsystem.NewInteractionSystem[interactionsystem.InteractionItem](),
+		InteractionSystem: registry.NewInteractionSystem[registry.InteractionItem](),
 	}
 
 	var framework = framework.NewGoGoFramework(gameOptions)
