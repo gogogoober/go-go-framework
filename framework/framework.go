@@ -10,11 +10,12 @@ import (
 )
 
 type GoGoFramework struct {
-	tickCount int
-	Registry  *registry.Registry
-	Scheduler *scheduler.Scheduler
-	Options   GoGoFrameworkNewOptions
-	Services  *GoGoServices
+	tickCount         int
+	Registry          *registry.Registry
+	Scheduler         *scheduler.Scheduler
+	Options           GoGoFrameworkNewOptions
+	Services          *GoGoServices
+	InteractionSystem *registry.InteractionSystem[registry.InteractionItem]
 }
 
 type GoGoServices struct {
@@ -22,10 +23,11 @@ type GoGoServices struct {
 }
 
 type GoGoFrameworkNewOptions struct {
-	GlobalTick int
-	GameName   string
-	Window     *window.GoGoWindow
-	GridSize   *window.GoGoWindow
+	GlobalTick        int
+	GameName          string
+	Window            *window.GoGoWindow
+	GridSize          *window.GoGoWindow
+	InteractionSystem *registry.InteractionSystem[registry.InteractionItem]
 }
 
 func NewGoGoFramework(options GoGoFrameworkNewOptions) *GoGoFramework {
@@ -48,10 +50,11 @@ func NewGoGoFramework(options GoGoFrameworkNewOptions) *GoGoFramework {
 	}
 
 	return &GoGoFramework{
-		Registry:  reg,
-		Scheduler: scheduler.NewScheduler(reg, options.GlobalTick),
-		Options:   options,
-		Services:  GoGoServices,
+		Registry:          reg,
+		Scheduler:         scheduler.NewScheduler(reg, options.GlobalTick),
+		Options:           options,
+		Services:          GoGoServices,
+		InteractionSystem: options.InteractionSystem,
 	}
 }
 
@@ -64,10 +67,13 @@ func (g *GoGoFramework) Update() error {
 	g.tickCount++
 	g.Services.TimeService.TotalTicks = g.tickCount
 	g.Registry.UpdateComponents()
+	g.InteractionSystem.UpdateInteractionSystemSnapshot()
 	g.Registry.UpdateSnapshot()
 	g.Registry.InitAddedComponents()
 	g.Registry.ResetQueues()
 	g.Scheduler.ScheduleUpdates(g.tickCount)
+	g.InteractionSystem.Reset()
+
 	return nil
 }
 

@@ -1,8 +1,9 @@
 package scheduler
 
 import (
-	"fmt"
+	"go-go-Framework/framework/entity"
 	"go-go-Framework/framework/registry"
+	"sync"
 
 	"github.com/hajimehoshi/ebiten/v2"
 )
@@ -20,16 +21,18 @@ func NewScheduler(registry *registry.Registry, globalTick int) *Scheduler {
 }
 
 func (s *Scheduler) ScheduleUpdates(tick int) {
-	if tick%s.globalTick == 0 {
-		fmt.Println("---------")
-		fmt.Println("Global Tick")
-	}
+	var wg sync.WaitGroup
 
 	for _, g := range s.registry.GetLiveComponents() {
-		for _, c := range g {
-			c.Update(tick)
+		for _, comp := range g {
+			wg.Add(1)
+			go func(c entity.Component, t int) {
+				defer wg.Done()
+				c.Update(t)
+			}(comp, tick)
 		}
 	}
+	wg.Wait()
 }
 
 func (s *Scheduler) ScheduleDrawings(screen *ebiten.Image) {
