@@ -18,7 +18,7 @@ pkgs.mkShell {
       libXxf86vm # video mode extension 
     ];
 
-        LD_LIBRARY_PATH = pkgs.lib.makeLibraryPath (with pkgs; [
+    LD_LIBRARY_PATH = pkgs.lib.makeLibraryPath (with pkgs; [
       libGL # runtime dlopen target
       libX11 # belt and suspenders
       libXcursor
